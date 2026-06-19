@@ -167,17 +167,14 @@ html, body {
 }
 .login-footer a:hover { color: var(--dislikes); }
 
-/* ===== Main View ===== */
-.main-view { overflow-y: auto; }
-
-/* ===== App Container ===== */
+/* ===== Common: App Container ===== */
 .app {
   max-width: 700px;
   margin: 0 auto;
   padding: 24px 20px 60px;
 }
 
-/* ===== Header ===== */
+/* ===== Common: Header ===== */
 .header {
   text-align: center;
   padding: 30px 0 10px;
@@ -202,7 +199,7 @@ html, body {
   margin-top: 4px;
 }
 
-/* ===== User Bar ===== */
+/* ===== Common: User Bar ===== */
 .user-bar {
   display: flex;
   align-items: center;
@@ -234,6 +231,226 @@ html, body {
   border-color: var(--allergies);
   color: var(--allergies);
 }
+
+/* ===== Friend List View ===== */
+.friend-list-view { background: var(--bg); }
+
+.back-row {
+  padding: 0 0 8px;
+}
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: var(--font-sm);
+  font-family: inherit;
+  cursor: pointer;
+  padding: 6px 4px;
+  transition: color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.back-btn:hover { color: var(--text); }
+
+.friend-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.friend-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+.friend-card:hover {
+  box-shadow: var(--shadow-hover);
+  border-color: #e8dbce;
+  transform: translateY(-1px);
+}
+.friend-card .friend-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.friend-card .friend-info {
+  flex: 1;
+  min-width: 0;
+}
+.friend-card .friend-name {
+  font-size: var(--font-md);
+  font-weight: 600;
+  color: var(--text);
+}
+.friend-card .friend-meta {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.friend-card .friend-arrow {
+  color: var(--text-muted);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.friend-card .friend-delete {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.05);
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.friend-card .friend-delete:hover {
+  background: var(--allergies);
+  color: #fff;
+}
+
+/* Friend add row */
+.friend-add-row {
+  margin-top: 4px;
+}
+.friend-add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 20px;
+  border-radius: 50px;
+  border: 2px dashed var(--text-muted);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: var(--font-sm);
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.friend-add-btn:hover {
+  border-color: var(--text-secondary);
+  color: var(--text-secondary);
+  background: rgba(0,0,0,0.02);
+}
+.friend-add-btn .plus { font-size: 18px; font-weight: 300; line-height: 1; }
+
+.friend-add-form {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  animation: formIn 0.25s ease;
+}
+.friend-add-form.active { display: flex; }
+@keyframes formIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.friend-add-form .friend-add-input {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 50px;
+  border: 2px solid #e0d7ce;
+  font-size: var(--font-sm);
+  font-family: inherit;
+  background: #fdfcfb;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.25s;
+  max-width: 240px;
+}
+.friend-add-form .friend-add-input:focus { border-color: var(--dislikes); }
+
+.friend-empty {
+  text-align: center;
+  padding: 40px 0 16px;
+  color: var(--text-muted);
+  font-size: var(--font-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+.friend-empty .empty-icon { font-size: 48px; opacity: 0.4; }
+
+/* ===== Friend Detail View (food preferences) ===== */
+.detail-view { background: var(--bg); }
+
+.detail-header {
+  text-align: center;
+  padding: 24px 0 10px;
+}
+.detail-header .detail-icon {
+  font-size: 52px;
+  animation: float 3s ease-in-out infinite;
+}
+.detail-header h1 {
+  font-size: var(--font-lg);
+  color: var(--text);
+  letter-spacing: 1px;
+  margin-top: 6px;
+}
+.detail-header .friend-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+  padding: 4px 14px;
+  border-radius: 20px;
+  background: #f5f0eb;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* ===== Export Buttons ===== */
+.export-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 0 16px;
+  flex-wrap: wrap;
+}
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  border-radius: 50px;
+  border: 1.5px solid #e0d7ce;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.export-btn:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.export-btn:active { transform: scale(0.96); }
 
 /* ===== Sync indicator ===== */
 .sync-bar {
@@ -269,9 +486,7 @@ html, body {
   transition: box-shadow 0.3s ease;
   border: 2px solid transparent;
 }
-.category:hover {
-  box-shadow: var(--shadow-hover);
-}
+.category:hover { box-shadow: var(--shadow-hover); }
 .category.likes  { border-color: var(--likes-light); }
 .category.dislikes { border-color: var(--dislikes-light); }
 .category.allergies { border-color: var(--allergies-light); }
@@ -364,7 +579,6 @@ html, body {
   from { opacity: 0; transform: scale(0.8); }
   to   { opacity: 1; transform: scale(1); }
 }
-
 .chip.removing {
   animation: chipOut 0.25s ease forwards;
 }
@@ -384,10 +598,7 @@ html, body {
   align-items: center;
   gap: 4px;
 }
-.empty-state .empty-icon {
-  font-size: 32px;
-  opacity: 0.5;
-}
+.empty-state .empty-icon { font-size: 32px; opacity: 0.5; }
 
 /* ===== Add Row ===== */
 .add-row {
@@ -417,11 +628,7 @@ html, body {
   color: var(--text-secondary);
   background: rgba(0,0,0,0.02);
 }
-.add-btn .plus {
-  font-size: 18px;
-  font-weight: 300;
-  line-height: 1;
-}
+.add-btn .plus { font-size: 18px; font-weight: 300; line-height: 1; }
 
 /* ===== Inline Add Form ===== */
 .add-form {
@@ -432,10 +639,6 @@ html, body {
   animation: formIn 0.25s ease;
 }
 .add-form.active { display: flex; }
-@keyframes formIn {
-  from { opacity: 0; transform: translateY(-6px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
 
 .add-input {
   flex: 1;
@@ -450,9 +653,7 @@ html, body {
   transition: border-color 0.25s;
   max-width: 260px;
 }
-.add-input:focus {
-  border-color: var(--likes);
-}
+.add-input:focus { border-color: var(--likes); }
 .category.dislikes .add-input:focus { border-color: var(--dislikes); }
 .category.allergies .add-input:focus { border-color: var(--allergies); }
 
@@ -471,17 +672,9 @@ html, body {
   -webkit-tap-highlight-color: transparent;
 }
 .form-confirm:active, .form-cancel:active { transform: scale(0.9); }
-
-.form-confirm {
-  background: #5a9e6f;
-  color: #fff;
-}
+.form-confirm { background: #5a9e6f; color: #fff; }
 .form-confirm:hover { background: #4a8d5f; }
-
-.form-cancel {
-  background: #e8e0d8;
-  color: var(--text-secondary);
-}
+.form-cancel { background: #e8e0d8; color: var(--text-secondary); }
 .form-cancel:hover { background: #d8cfc5; }
 
 /* ===== Toast ===== */
@@ -507,11 +700,7 @@ html, body {
   gap: 16px;
   flex-wrap: wrap;
 }
-.footer-summary span {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
+.footer-summary span { display: inline-flex; align-items: center; gap: 4px; }
 
 /* ===== Responsive ===== */
 @media (max-width: 480px) {
@@ -526,6 +715,9 @@ html, body {
   .header .icon { font-size: 40px; }
   .login-card { padding: 24px 18px; gap: 14px; }
   .login-view .login-icon { font-size: 48px; }
+  .friend-card { padding: 14px 16px; }
+  .detail-header { padding: 16px 0 6px; }
+  .detail-header .detail-icon { font-size: 40px; }
 }
 
 @media (max-width: 360px) {
@@ -533,38 +725,9 @@ html, body {
   .category { padding: 14px 12px 10px; }
   .add-input { max-width: 140px; }
   .login-card { padding: 20px 14px; }
+  .friend-card { padding: 12px 14px; }
+  .friend-add-input { max-width: 160px; }
 }
-
-/* ===== Export Buttons ===== */
-.export-row {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  padding: 0 0 16px;
-  flex-wrap: wrap;
-}
-.export-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 8px 16px;
-  border-radius: 50px;
-  border: 1.5px solid #e0d7ce;
-  background: var(--bg-card);
-  color: var(--text-secondary);
-  font-size: 0.82rem;
-  font-weight: 500;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
-}
-.export-btn:hover {
-  border-color: var(--text-muted);
-  color: var(--text);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-}
-.export-btn:active { transform: scale(0.96); }
 
 /* ===== Print Styles (for PDF export) ===== */
 @media print {
@@ -573,12 +736,13 @@ html, body {
   .view { position: static; opacity: 1; pointer-events: auto; overflow: visible; }
   .user-bar, .export-row, .add-row, .add-btn, .add-form,
   .sync-bar, .toast, .delete-btn, .footer-summary,
+  .back-row, .friend-delete, .friend-add-row,
   #syncBar, #syncText, .chip .delete-btn { display: none !important; }
   .chip { background: #f0f0f0; border: 1px solid #ddd; animation: none; }
   .category { box-shadow: none; break-inside: avoid; margin-bottom: 16px; border: 1px solid #e0e0e0; }
   .app { max-width: 100%; padding: 0; }
-  .header { padding: 10px 0 16px; }
-  .header .icon { animation: none; }
+  .detail-header { padding: 10px 0 16px; }
+  .detail-header .detail-icon { animation: none; }
   @page { margin: 1.5cm; }
 }
 </style>
@@ -591,7 +755,7 @@ html, body {
     <div class="login-view">
       <div class="login-icon">🍽️</div>
       <h1>美食偏好管理</h1>
-      <p class="login-subtitle">登录以管理朋友的口味与禁忌</p>
+      <p class="login-subtitle">登录以管理朋友的饮食偏好</p>
 
       <div class="login-card">
         <div>
@@ -614,20 +778,55 @@ html, body {
     </div>
   </div>
 
-  <!-- ==================== Main View ==================== -->
-  <div class="view main-view" id="mainView">
+  <!-- ==================== Friend List View ==================== -->
+  <div class="view friend-list-view" id="friendListView">
     <div class="app">
-      <!-- Header -->
       <div class="header">
         <div class="icon">🍽️</div>
         <h1>美食偏好管理</h1>
-        <p class="subtitle">记录朋友的口味与禁忌</p>
+        <p class="subtitle">选择要查看的朋友</p>
       </div>
 
-      <!-- User bar -->
       <div class="user-bar">
-        <span class="user-email" id="userEmail"></span>
-        <button class="logout-btn" id="logoutBtn" onclick="doLogout()">退出登录</button>
+        <span class="user-email" id="friendListUserEmail"></span>
+        <button class="logout-btn" onclick="doLogout()">退出登录</button>
+      </div>
+
+      <div class="friend-cards" id="friendCards"></div>
+      <div class="friend-empty" id="friendEmpty">
+        <span class="empty-icon">👥</span>
+        <span>还没有朋友记录，点击下方添加</span>
+      </div>
+
+      <div class="friend-add-row" id="friendAddRow">
+        <button class="friend-add-btn" id="friendAddBtn" onclick="showFriendAddForm()">
+          <span class="plus">+</span> 添加朋友
+        </button>
+        <div class="friend-add-form" id="friendAddForm">
+          <input class="friend-add-input" id="friendAddInput" type="text" placeholder="输入朋友名字…" maxlength="30">
+          <button class="form-confirm" onclick="confirmAddFriend()" title="确认">✓</button>
+          <button class="form-cancel" onclick="cancelAddFriend()" title="取消">✕</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== Friend Detail View ==================== -->
+  <div class="view detail-view" id="detailView">
+    <div class="app">
+      <div class="back-row">
+        <button class="back-btn" onclick="goBackToFriendList()">◀ 返回朋友列表</button>
+      </div>
+
+      <div class="detail-header">
+        <div class="detail-icon">🍽️</div>
+        <h1>美食偏好管理</h1>
+        <div class="friend-tag" id="friendTag">👤 <span id="detailFriendName"></span></div>
+      </div>
+
+      <div class="user-bar">
+        <span class="user-email" id="detailUserEmail"></span>
+        <button class="logout-btn" onclick="doLogout()">退出登录</button>
       </div>
 
       <!-- Export buttons -->
@@ -743,9 +942,11 @@ html, body {
   //  App State
   // ============================
   let foodItems = [];
+  let friends = [];
   let realtimeChannel = null;
   let currentAddCategory = null;
   let currentUser = null;
+  let currentFriend = null;
   let signupMode = false;
 
   // ============================
@@ -782,18 +983,49 @@ html, body {
   //  View Switching
   // ============================
   const loginView = $('#loginView');
-  const mainView = $('#mainView');
+  const friendListView = $('#friendListView');
+  const detailView = $('#detailView');
 
   function switchToLogin() {
     loginView.classList.add('active');
-    mainView.classList.remove('active');
+    friendListView.classList.remove('active');
+    detailView.classList.remove('active');
   }
 
-  function switchToMain(user) {
-    currentUser = user;
-    $('#userEmail').textContent = user.email;
+  function switchToFriendList() {
     loginView.classList.remove('active');
-    mainView.classList.add('active');
+    detailView.classList.remove('active');
+    friendListView.classList.add('active');
+    currentFriend = null;
+    renderFriendList();
+  }
+
+  async function switchToFriendDetail(friend) {
+    currentFriend = friend;
+    $('#detailFriendName').textContent = friend.name;
+    $('#detailUserEmail').textContent = currentUser.email;
+
+    friendListView.classList.remove('active');
+    loginView.classList.remove('active');
+    detailView.classList.add('active');
+
+    // Load food items for this friend
+    try {
+      setSyncStatus(true);
+      foodItems = await loadFoodItems(friend.id);
+      renderAll();
+      setSyncStatus(false);
+    } catch (e) {
+      console.error('Failed to load food items:', e);
+      renderAll();
+      setSyncStatus(false);
+    }
+  }
+
+  function goBackToFriendList() {
+    // Reload friends (counts may have changed)
+    switchToFriendList();
+    loadFriends().then(() => renderFriendList());
   }
 
   // ============================
@@ -831,7 +1063,6 @@ html, body {
 
     try {
       if (signupMode) {
-        // Sign up
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -847,7 +1078,6 @@ html, body {
         }
       }
 
-      // Sign in
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
 
@@ -882,23 +1112,26 @@ html, body {
     loginError.textContent = '';
     loginPassword.value = '';
     loginBtn.disabled = false;
+    currentUser = user;
 
-    switchToMain(user);
+    $('#friendListUserEmail').textContent = user.email;
 
-    // Load data and subscribe
+    // Load friends
     try {
-      setSyncStatus(true);
-      foodItems = await loadFoodItems();
-      renderAll();
-      subscribeToChanges();
-      setSyncStatus(false);
-      console.log(`🍽️ 美食偏好管理已就绪 | ${foodItems.length} 项食物`);
+      friends = await loadFriends();
     } catch (e) {
-      console.error('Failed to load after login:', e);
-      renderAll();
-      setSyncStatus(false);
-      showToast('数据加载失败，请刷新重试', 3000);
+      console.warn('Failed to load friends:', e);
+      friends = [];
     }
+
+    // Go to friend list
+    switchToFriendList();
+    renderFriendList();
+
+    // Subscribe to realtime
+    subscribeToChanges();
+
+    console.log(`🍽️ 美食偏好管理已就绪 | ${friends.length} 位朋友`);
   }
 
   async function doLogout() {
@@ -910,17 +1143,15 @@ html, body {
     }
     await supabase.auth.signOut();
     currentUser = null;
+    currentFriend = null;
     foodItems = [];
+    friends = [];
     switchToLogin();
   }
 
-  // Expose to global scope for onclick handlers
   window.doLogout = doLogout;
 
-  // Login button event
   loginBtn.addEventListener('click', doLogin);
-
-  // Enter key to login
   loginPassword.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') doLogin();
   });
@@ -929,12 +1160,205 @@ html, body {
   });
 
   // ============================
-  //  Supabase Operations
+  //  Friend CRUD
   // ============================
-  async function loadFoodItems() {
+  async function loadFriends() {
+    const { data, error } = await supabase
+      .from('friends')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      console.error('Failed to load friends:', error);
+      return [];
+    }
+    // Count food items per friend
+    if (data) {
+      for (const friend of data) {
+        const { count, error: countErr } = await supabase
+          .from('food_items')
+          .select('*', { count: 'exact', head: true })
+          .eq('friend_id', friend.id);
+        friend.foodCount = countErr ? 0 : count;
+      }
+    }
+    return data || [];
+  }
+
+  async function addFriend(name) {
+    const { data, error } = await supabase
+      .from('friends')
+      .insert({ name })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Failed to add friend:', error);
+      throw error;
+    }
+    return data;
+  }
+
+  async function deleteFriend(id) {
+    // Delete food items first, then friend
+    const { error: foodErr } = await supabase
+      .from('food_items')
+      .delete()
+      .eq('friend_id', id);
+
+    if (foodErr) {
+      console.error('Failed to delete friend food items:', foodErr);
+      throw foodErr;
+    }
+
+    const { error } = await supabase
+      .from('friends')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Failed to delete friend:', error);
+      throw error;
+    }
+  }
+
+  // ============================
+  //  Friend List Rendering
+  // ============================
+  const AVATAR_COLORS = ['#ffe8e4', '#fff3e0', '#e8f5e9', '#e3f2fd', '#f3e5f5', '#fff8e1'];
+  const AVATAR_EMOJI = ['👤', '🧑', '👩', '👨', '👧', '👦', '🧒', '🙂'];
+
+  function getAvatarStyle(friend) {
+    const idx = friends.indexOf(friend);
+    return {
+      bg: AVATAR_COLORS[idx % AVATAR_COLORS.length],
+      emoji: AVATAR_EMOJI[idx % AVATAR_EMOJI.length]
+    };
+  }
+
+  function renderFriendList() {
+    const container = $('#friendCards');
+    const emptyEl = $('#friendEmpty');
+
+    if (friends.length === 0) {
+      emptyEl.style.display = 'flex';
+      container.innerHTML = '';
+    } else {
+      emptyEl.style.display = 'none';
+      container.innerHTML = friends.map(f => {
+        const av = getAvatarStyle(f);
+        const countText = (f.foodCount || 0) > 0 ? `${f.foodCount} 项食物` : '暂无记录';
+        return `
+          <div class="friend-card" onclick="enterFriend('${f.id}')">
+            <div class="friend-avatar" style="background:${av.bg}">${av.emoji}</div>
+            <div class="friend-info">
+              <div class="friend-name">${escapeHtml(f.name)}</div>
+              <div class="friend-meta">${countText}</div>
+            </div>
+            <button class="friend-delete" onclick="event.stopPropagation(); handleDeleteFriend('${f.id}', '${escapeHtml(f.name).replace(/'/g, "\\'")}')" title="删除">✕</button>
+            <span class="friend-arrow">›</span>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+
+  // ============================
+  //  Friend Add Form
+  // ============================
+  function showFriendAddForm() {
+    const btn = $('#friendAddBtn');
+    const form = $('#friendAddForm');
+    const input = $('#friendAddInput');
+
+    btn.style.display = 'none';
+    form.classList.add('active');
+    input.value = '';
+    input.focus();
+  }
+
+  function cancelAddFriend() {
+    const btn = $('#friendAddBtn');
+    const form = $('#friendAddForm');
+    const input = $('#friendAddInput');
+
+    form.classList.remove('active');
+    input.value = '';
+    btn.style.display = '';
+  }
+
+  async function confirmAddFriend() {
+    const input = $('#friendAddInput');
+    const name = input.value.trim();
+
+    if (!name) {
+      showToast('请输入朋友名字');
+      input.focus();
+      return;
+    }
+
+    const duplicate = friends.find(f => f.name === name);
+    if (duplicate) {
+      showToast('该名字已存在');
+      input.focus();
+      return;
+    }
+
+    try {
+      await addFriend(name);
+      showToast(`已添加「${name}」`);
+      cancelAddFriend();
+      friends = await loadFriends();
+      renderFriendList();
+    } catch (e) {
+      showToast('添加失败，请检查网络连接');
+      console.error(e);
+    }
+  }
+
+  // Expose friend functions
+  window.showFriendAddForm = showFriendAddForm;
+  window.cancelAddFriend = cancelAddFriend;
+  window.confirmAddFriend = confirmAddFriend;
+
+  window.enterFriend = function(friendId) {
+    const friend = friends.find(f => f.id === friendId);
+    if (friend) switchToFriendDetail(friend);
+  };
+
+  async function handleDeleteFriend(id, name) {
+    if (!confirm(`确定要删除「${name}」及其所有食物偏好吗？此操作不可恢复。`)) return;
+
+    try {
+      await deleteFriend(id);
+      showToast(`已删除「${name}」`);
+      // If currently viewing this friend, go back
+      if (currentFriend && currentFriend.id === id) {
+        currentFriend = null;
+        foodItems = [];
+      }
+      friends = await loadFriends();
+      renderFriendList();
+    } catch (e) {
+      showToast('删除失败，请检查网络连接');
+      console.error(e);
+    }
+  }
+
+  window.handleDeleteFriend = handleDeleteFriend;
+  window.goBackToFriendList = goBackToFriendList;
+
+  // ============================
+  //  Supabase Food Operations
+  // ============================
+  async function loadFoodItems(friendId) {
+    const fid = friendId || (currentFriend ? currentFriend.id : null);
+    if (!fid) return [];
+
     const { data, error } = await supabase
       .from('food_items')
       .select('*')
+      .eq('friend_id', fid)
       .order('sort_order', { ascending: true });
 
     if (error) {
@@ -945,6 +1369,8 @@ html, body {
   }
 
   async function addFoodItem(name, category) {
+    if (!currentFriend) throw new Error('No friend selected');
+
     const itemsInCategory = foodItems.filter(f => f.category === category);
     const nextOrder = itemsInCategory.length > 0
       ? Math.max(...itemsInCategory.map(f => f.sort_order)) + 1
@@ -952,7 +1378,7 @@ html, body {
 
     const { data, error } = await supabase
       .from('food_items')
-      .insert({ name, category, sort_order: nextOrder })
+      .insert({ name, category, sort_order: nextOrder, friend_id: currentFriend.id })
       .select()
       .single();
 
@@ -984,19 +1410,31 @@ html, body {
     }
 
     realtimeChannel = supabase
-      .channel('food-items-changes')
+      .channel('app-changes')
       .on('postgres_changes',
         { event: '*', schema: 'public', table: 'food_items' },
         async () => {
-          setSyncStatus(true);
-          foodItems = await loadFoodItems();
-          renderAll();
-          setTimeout(() => setSyncStatus(false), 600);
+          // Reload food items if we're on detail view
+          if (currentFriend) {
+            setSyncStatus(true);
+            foodItems = await loadFoodItems(currentFriend.id);
+            renderAll();
+            setTimeout(() => setSyncStatus(false), 600);
+          }
+        }
+      )
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'friends' },
+        async () => {
+          // Reload friends list
+          friends = await loadFriends();
+          // Re-render if on friend list view
+          if (!currentFriend) renderFriendList();
         }
       )
       .subscribe((status) => {
         if (status === 'SUBSCRIBED') {
-          console.log('✅ Realtime subscribed to food_items');
+          console.log('✅ Realtime subscribed');
         }
       });
   }
@@ -1004,6 +1442,7 @@ html, body {
   function setSyncStatus(syncing) {
     const bar = $('#syncBar');
     const text = $('#syncText');
+    if (!bar || !text) return;
     if (syncing) {
       bar.classList.add('syncing');
       text.textContent = '同步中…';
@@ -1031,6 +1470,8 @@ html, body {
     const countEl = $(`#count-${category}`);
     const addRow = $(`#addRow-${category}`);
 
+    if (!chipsContainer) return;
+
     countEl.textContent = items.length > 0 ? `${items.length} 项` : '';
 
     if (items.length === 0) {
@@ -1050,12 +1491,14 @@ html, body {
   }
 
   function renderFooterSummary() {
+    const footer = $('#footerSummary');
+    if (!footer) return;
+
     const likes = foodItems.filter(f => f.category === 'likes').length;
     const dislikes = foodItems.filter(f => f.category === 'dislikes').length;
     const allergies = foodItems.filter(f => f.category === 'allergies').length;
     const total = foodItems.length;
 
-    const footer = $('#footerSummary');
     if (total === 0) {
       footer.innerHTML = '<span>📝 开始记录朋友的美食偏好吧</span>';
     } else {
@@ -1122,7 +1565,7 @@ html, body {
       await addFoodItem(name, category);
       showToast(`已添加「${name}」`);
       cancelAdd(category);
-      foodItems = await loadFoodItems();
+      foodItems = await loadFoodItems(currentFriend.id);
       renderAll();
     } catch (e) {
       showToast('添加失败，请检查网络连接');
@@ -1145,7 +1588,7 @@ html, body {
     try {
       await deleteFoodItem(id);
       showToast(`已删除「${name}」`);
-      foodItems = await loadFoodItems();
+      foodItems = await loadFoodItems(currentFriend.id);
       renderAll();
     } catch (e) {
       showToast('删除失败，请检查网络连接');
@@ -1154,27 +1597,10 @@ html, body {
     }
   }
 
-  // Expose to global scope for onclick handlers
   window.showAddForm = showAddForm;
   window.cancelAdd = cancelAdd;
   window.confirmAdd = confirmAdd;
   window.handleDelete = handleDelete;
-
-  // ============================
-  //  Keyboard Shortcuts
-  // ============================
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && currentAddCategory) {
-      cancelAdd(currentAddCategory);
-      return;
-    }
-    if (e.key === 'Enter' && currentAddCategory) {
-      const input = $(`#addInput-${currentAddCategory}`);
-      if (document.activeElement === input) {
-        confirmAdd(currentAddCategory);
-      }
-    }
-  });
 
   // ============================
   //  Export Functions
@@ -1207,15 +1633,13 @@ html, body {
       showToast('暂无数据可导出');
       return;
     }
-
-    // UTF-8 BOM for Excel to recognize Chinese
+    const friendName = currentFriend ? currentFriend.name : '未知';
     let csv = '﻿分类,食物名称\n';
     for (const item of foodItems) {
       csv += `${CAT_LABELS[item.category]},${item.name}\n`;
     }
-
     const date = new Date().toISOString().slice(0, 10);
-    downloadBlob(csv, `美食偏好_${date}.csv`, 'text/csv;charset=utf-8');
+    downloadBlob(csv, `${friendName}_美食偏好_${date}.csv`, 'text/csv;charset=utf-8');
     showToast('已导出 CSV 文件');
   }
 
@@ -1224,10 +1648,10 @@ html, body {
       showToast('暂无数据可导出');
       return;
     }
-
+    const friendName = currentFriend ? currentFriend.name : '未知';
     const data = getCategoryItems();
     const date = new Date().toISOString().slice(0, 10);
-    let text = `美食偏好记录\n`;
+    let text = `${friendName} 的美食偏好\n`;
     text += `导出日期：${date}\n`;
     text += `${'='.repeat(30)}\n\n`;
 
@@ -1241,7 +1665,7 @@ html, body {
       text += '\n';
     }
 
-    downloadBlob(text, `美食偏好_${date}.txt`, 'text/plain;charset=utf-8');
+    downloadBlob(text, `${friendName}_美食偏好_${date}.txt`, 'text/plain;charset=utf-8');
     showToast('已导出文本文件');
   }
 
@@ -1254,30 +1678,49 @@ html, body {
     setTimeout(() => window.print(), 300);
   }
 
-  // Expose to global scope
   window.exportCSV = exportCSV;
   window.exportText = exportText;
   window.exportPDF = exportPDF;
 
   // ============================
+  //  Keyboard Shortcuts
+  // ============================
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && currentAddCategory) {
+      cancelAdd(currentAddCategory);
+      return;
+    }
+    if (e.key === 'Enter' && currentAddCategory) {
+      const input = $(`#addInput-${currentAddCategory}`);
+      if (document.activeElement === input) {
+        confirmAdd(currentAddCategory);
+      }
+    }
+  });
+
+  // ============================
   //  Init
   // ============================
   async function init() {
-    // Check for existing session
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        onLoginSuccess(session.user);
+        currentUser = session.user;
+        $('#friendListUserEmail').textContent = session.user.email;
+
+        friends = await loadFriends();
+        switchToFriendList();
+        renderFriendList();
+        subscribeToChanges();
+        console.log(`🍽️ 美食偏好管理已就绪 | ${friends.length} 位朋友`);
         return;
       }
     } catch (e) {
       console.warn('Session check failed:', e);
     }
 
-    // No session → show login
     switchToLogin();
 
-    // Listen for auth state changes
     supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
         onLoginSuccess(session.user);
@@ -1287,13 +1730,14 @@ html, body {
           realtimeChannel = null;
         }
         currentUser = null;
+        currentFriend = null;
         foodItems = [];
+        friends = [];
         switchToLogin();
       }
     });
   }
 
-  // Start
   init();
 })();
 </script>

@@ -1335,6 +1335,7 @@ html, body {
     const { data, error } = await supabase
       .from('friends')
       .select('*')
+      .eq('user_id', currentUser.id)
       .order('created_at', { ascending: true });
 
     if (error) {
@@ -1347,7 +1348,8 @@ html, body {
         const { count, error: countErr } = await supabase
           .from('food_items')
           .select('*', { count: 'exact', head: true })
-          .eq('friend_id', friend.id);
+          .eq('friend_id', friend.id)
+          .eq('user_id', currentUser.id);
         friend.foodCount = countErr ? 0 : count;
       }
     }
@@ -1357,7 +1359,7 @@ html, body {
   async function addFriend(name) {
     const { data, error } = await supabase
       .from('friends')
-      .insert({ name })
+      .insert({ name, user_id: currentUser.id })
       .select()
       .single();
 
@@ -1373,7 +1375,8 @@ html, body {
     const { error: foodErr } = await supabase
       .from('food_items')
       .delete()
-      .eq('friend_id', id);
+      .eq('friend_id', id)
+      .eq('user_id', currentUser.id);
 
     if (foodErr) {
       console.error('Failed to delete friend food items:', foodErr);
@@ -1383,7 +1386,8 @@ html, body {
     const { error } = await supabase
       .from('friends')
       .delete()
-      .eq('id', id);
+      .eq('id', id)
+      .eq('user_id', currentUser.id);
 
     if (error) {
       console.error('Failed to delete friend:', error);
@@ -1440,7 +1444,8 @@ html, body {
       const { error } = await supabase
         .from('friends')
         .update({ avatar_url: dataUrl })
-        .eq('id', editingAvatarFriendId);
+        .eq('id', editingAvatarFriendId)
+        .eq('user_id', currentUser.id);
 
       if (error) throw error;
 
@@ -1621,6 +1626,7 @@ html, body {
       .from('food_items')
       .select('*')
       .eq('friend_id', fid)
+      .eq('user_id', currentUser.id)
       .order('sort_order', { ascending: true });
 
     if (error) {
@@ -1644,6 +1650,7 @@ html, body {
         name, category,
         sort_order: nextOrder,
         friend_id: currentFriend.id,
+        user_id: currentUser.id,
         store_tag: storeTag || null,
         dish_tag: dishTag || null
       })
@@ -1661,7 +1668,8 @@ html, body {
     const { error } = await supabase
       .from('food_items')
       .delete()
-      .eq('id', id);
+      .eq('id', id)
+      .eq('user_id', currentUser.id);
 
     if (error) {
       console.error('Failed to delete food item:', error);
@@ -1680,7 +1688,7 @@ html, body {
     realtimeChannel = supabase
       .channel('app-changes')
       .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'food_items' },
+        { event: '*', schema: 'public', table: 'food_items', filter: `user_id=eq.${currentUser.id}` },
         async () => {
           // Reload food items if we're on detail view
           if (currentFriend) {
@@ -1692,7 +1700,7 @@ html, body {
         }
       )
       .on('postgres_changes',
-        { event: '*', schema: 'public', table: 'friends' },
+        { event: '*', schema: 'public', table: 'friends', filter: `user_id=eq.${currentUser.id}` },
         async () => {
           // Reload friends list
           friends = await loadFriends();

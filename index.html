@@ -1552,8 +1552,7 @@ html, body {
       friends = await loadFriends();
       renderFriendList();
     } catch (e) {
-      const msg = e.message || JSON.stringify(e);
-      showToast('添加失败：' + msg, 4000);
+      showToast('添加失败，请检查网络连接', 2000);
       console.error(e);
     }
   }
@@ -1921,8 +1920,7 @@ html, body {
       foodItems = await loadFoodItems(currentFriend.id);
       renderAll();
     } catch (e) {
-      const msg = e.message || JSON.stringify(e);
-      showToast('添加失败：' + msg, 4000);
+      showToast('添加失败，请检查网络连接', 2000);
       console.error(e);
     }
   }

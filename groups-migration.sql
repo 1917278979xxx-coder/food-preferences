@@ -1,7 +1,6 @@
 -- ==========================================
--- 美食偏好管理 - 小组功能数据库迁移
--- 在 Supabase SQL Editor 中执行:
--- https://supabase.com/dashboard/project/mbkdigtofgmdkepwsrve
+-- 美食偏好管理 - 小组功能完整数据库迁移
+-- 包含所有修复（递归 RLS + 邀请码查找）
 -- ==========================================
 
 -- 1) 新建 groups 表
@@ -45,30 +44,40 @@ alter table public.groups enable row level security;
 alter table public.group_members enable row level security;
 alter table public.edit_logs enable row level security;
 
--- 6) groups RLS 策略
-create policy "Members can view their groups" on public.groups for select using (
-  auth.uid() in (select user_id from public.group_members where group_id = id)
-);
-create policy "Users can create groups" on public.groups for insert with check (auth.uid() = created_by);
-create policy "Owner can update group" on public.groups for update using (auth.uid() = created_by);
-create policy "Owner can delete group" on public.groups for delete using (auth.uid() = created_by);
+-- 6) 安全函数（避免 RLS 递归）
+create or replace function public.get_my_group_ids()
+returns setof uuid
+language sql
+security definer
+set search_path = ''
+as $$
+  select group_id from public.group_members where user_id = auth.uid();
+$$;
 
--- 7) group_members RLS 策略
-create policy "View members of own groups" on public.group_members for select using (
-  auth.uid() in (select user_id from public.group_members gm where gm.group_id = group_id)
+-- 7) groups RLS 策略
+create policy "groups_select" on public.groups for select using (
+  auth.uid() = created_by or id in (select public.get_my_group_ids())
 );
-create policy "Users can join groups" on public.group_members for insert with check (auth.uid() = user_id);
-create policy "Users can leave groups" on public.group_members for delete using (auth.uid() = user_id);
+-- 额外：允许所有人查找邀请码
+create policy "groups_find_by_invite" on public.groups for select using (true);
+create policy "groups_insert" on public.groups for insert with check (auth.uid() = created_by);
+create policy "groups_update" on public.groups for update using (auth.uid() = created_by);
+create policy "groups_delete" on public.groups for delete using (auth.uid() = created_by);
 
--- 8) edit_logs RLS 策略
-create policy "Members can view edit logs" on public.edit_logs for select using (
-  auth.uid() in (select user_id from public.group_members where group_id = edit_logs.group_id)
+-- 8) group_members RLS 策略
+create policy "group_members_select" on public.group_members for select using (
+  auth.uid() = user_id or group_id in (select public.get_my_group_ids())
 );
-create policy "Members can insert edit logs" on public.edit_logs for insert with check (
-  auth.uid() = user_id
-);
+create policy "group_members_insert" on public.group_members for insert with check (auth.uid() = user_id);
+create policy "group_members_delete" on public.group_members for delete using (auth.uid() = user_id);
 
--- 9) 更新 friends RLS（增加小组访问）
+-- 9) edit_logs RLS 策略
+create policy "edit_logs_select" on public.edit_logs for select using (
+  auth.uid() = user_id or group_id in (select public.get_my_group_ids())
+);
+create policy "edit_logs_insert" on public.edit_logs for insert with check (auth.uid() = user_id);
+
+-- 10) 更新 friends RLS（增加小组访问）
 drop policy if exists "Users can view own friends" on public.friends;
 drop policy if exists "Users can insert own friends" on public.friends;
 drop policy if exists "Users can update own friends" on public.friends;
@@ -87,7 +96,7 @@ create policy "Update own or group friends" on public.friends for update using (
 );
 create policy "Delete own friends" on public.friends for delete using (auth.uid() = user_id);
 
--- 10) 更新 food_items RLS（增加小组访问）
+-- 11) 更新 food_items RLS（增加小组访问）
 drop policy if exists "Users can view own food_items" on public.food_items;
 drop policy if exists "Users can insert own food_items" on public.food_items;
 drop policy if exists "Users can update own food_items" on public.food_items;

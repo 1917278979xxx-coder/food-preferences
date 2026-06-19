@@ -285,6 +285,37 @@ html, body {
   justify-content: center;
   font-size: 22px;
   flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.friend-card .friend-avatar:hover {
+  opacity: 0.85;
+}
+.friend-card .friend-avatar::after {
+  content: '📷';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  background: rgba(0,0,0,0.35);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+.friend-card .friend-avatar.has-photo::after {
+  content: '🔄';
+}
+.friend-card .friend-avatar:hover::after {
+  opacity: 1;
+}
+.friend-card .friend-avatar.has-photo {
+  /* photo is set via background-image on the element */;
 }
 .friend-card .friend-info {
   flex: 1;
@@ -787,6 +818,9 @@ html, body {
         <p class="subtitle">选择要查看的朋友</p>
       </div>
 
+      <!-- Hidden file input for avatar upload -->
+      <input type="file" id="avatarFileInput" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+
       <div class="user-bar">
         <span class="user-email" id="friendListUserEmail"></span>
         <button class="logout-btn" onclick="doLogout()">退出登录</button>
@@ -1228,12 +1262,97 @@ html, body {
   const AVATAR_COLORS = ['#ffe8e4', '#fff3e0', '#e8f5e9', '#e3f2fd', '#f3e5f5', '#fff8e1'];
   const AVATAR_EMOJI = ['👤', '🧑', '👩', '👨', '👧', '👦', '🧒', '🙂'];
 
+  // Track which friend is being avatar-edited
+  let editingAvatarFriendId = null;
+
   function getAvatarStyle(friend) {
+    if (friend.avatar_url) {
+      return { bg: 'transparent', emoji: '', photo: friend.avatar_url };
+    }
     const idx = friends.indexOf(friend);
     return {
       bg: AVATAR_COLORS[idx % AVATAR_COLORS.length],
-      emoji: AVATAR_EMOJI[idx % AVATAR_EMOJI.length]
+      emoji: AVATAR_EMOJI[idx % AVATAR_EMOJI.length],
+      photo: null
     };
+  }
+
+  function openAvatarPicker(friendId, event) {
+    event.stopPropagation();
+    editingAvatarFriendId = friendId;
+    const input = $('#avatarFileInput');
+    input.value = '';
+    input.click();
+  }
+
+  async function handleAvatarUpload(event) {
+    const file = event.target.files[0];
+    if (!file || !editingAvatarFriendId) return;
+
+    // Validate type
+    if (!file.type.startsWith('image/')) {
+      showToast('请选择图片文件', 2000);
+      return;
+    }
+
+    try {
+      showToast('正在处理头像…', 2000);
+
+      // Resize and convert to base64 (max 200x200, JPEG quality 0.7)
+      const dataUrl = await resizeImageToDataUrl(file, 200, 0.7);
+
+      // Update friend in Supabase
+      const { error } = await supabase
+        .from('friends')
+        .update({ avatar_url: dataUrl })
+        .eq('id', editingAvatarFriendId);
+
+      if (error) throw error;
+
+      // Update local state
+      const friend = friends.find(f => f.id === editingAvatarFriendId);
+      if (friend) friend.avatar_url = dataUrl;
+
+      renderFriendList();
+      showToast('✅ 头像已更新');
+
+      // Also sync if on detail view
+      if (currentFriend && currentFriend.id === editingAvatarFriendId) {
+        currentFriend.avatar_url = dataUrl;
+      }
+    } catch (err) {
+      console.error('Avatar upload failed:', err);
+      showToast('❌ 头像上传失败：' + (err.message || '请重试'), 3000);
+    } finally {
+      editingAvatarFriendId = null;
+    }
+  }
+
+  function resizeImageToDataUrl(file, maxSize, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          // Calculate new dimensions
+          let w = img.width, h = img.height;
+          if (w > maxSize || h > maxSize) {
+            if (w > h) { h = Math.round(h * maxSize / w); w = maxSize; }
+            else { w = Math.round(w * maxSize / h); h = maxSize; }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+        img.onerror = () => reject(new Error('图片加载失败'));
+        img.src = reader.result;
+      };
+      reader.onerror = () => reject(new Error('文件读取失败'));
+      reader.readAsDataURL(file);
+    });
   }
 
   function renderFriendList() {
@@ -1248,9 +1367,13 @@ html, body {
       container.innerHTML = friends.map(f => {
         const av = getAvatarStyle(f);
         const countText = (f.foodCount || 0) > 0 ? `${f.foodCount} 项食物` : '暂无记录';
+        const avatarStyle = av.photo
+          ? `background-image:url(${av.photo});background-color:${av.bg};`
+          : `background:${av.bg};`;
+        const avatarClass = av.photo ? 'friend-avatar has-photo' : 'friend-avatar';
         return `
           <div class="friend-card" onclick="enterFriend('${f.id}')">
-            <div class="friend-avatar" style="background:${av.bg}">${av.emoji}</div>
+            <div class="${avatarClass}" style="${avatarStyle}" onclick="openAvatarPicker('${f.id}', event)" title="点击更换头像">${av.emoji}</div>
             <div class="friend-info">
               <div class="friend-name">${escapeHtml(f.name)}</div>
               <div class="friend-meta">${countText}</div>
@@ -1320,6 +1443,8 @@ html, body {
   window.showFriendAddForm = showFriendAddForm;
   window.cancelAddFriend = cancelAddFriend;
   window.confirmAddFriend = confirmAddFriend;
+  window.openAvatarPicker = openAvatarPicker;
+  window.handleAvatarUpload = handleAvatarUpload;
 
   window.enterFriend = function(friendId) {
     const friend = friends.find(f => f.id === friendId);

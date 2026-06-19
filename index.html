@@ -534,6 +534,53 @@ html, body {
   .add-input { max-width: 140px; }
   .login-card { padding: 20px 14px; }
 }
+
+/* ===== Export Buttons ===== */
+.export-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 0 16px;
+  flex-wrap: wrap;
+}
+.export-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 16px;
+  border-radius: 50px;
+  border: 1.5px solid #e0d7ce;
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.export-btn:hover {
+  border-color: var(--text-muted);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.export-btn:active { transform: scale(0.96); }
+
+/* ===== Print Styles (for PDF export) ===== */
+@media print {
+  body { background: #fff; }
+  .app-wrapper { position: static; height: auto; overflow: visible; }
+  .view { position: static; opacity: 1; pointer-events: auto; overflow: visible; }
+  .user-bar, .export-row, .add-row, .add-btn, .add-form,
+  .sync-bar, .toast, .delete-btn, .footer-summary,
+  #syncBar, #syncText, .chip .delete-btn { display: none !important; }
+  .chip { background: #f0f0f0; border: 1px solid #ddd; animation: none; }
+  .category { box-shadow: none; break-inside: avoid; margin-bottom: 16px; border: 1px solid #e0e0e0; }
+  .app { max-width: 100%; padding: 0; }
+  .header { padding: 10px 0 16px; }
+  .header .icon { animation: none; }
+  @page { margin: 1.5cm; }
+}
 </style>
 </head>
 <body>
@@ -581,6 +628,13 @@ html, body {
       <div class="user-bar">
         <span class="user-email" id="userEmail"></span>
         <button class="logout-btn" id="logoutBtn" onclick="doLogout()">退出登录</button>
+      </div>
+
+      <!-- Export buttons -->
+      <div class="export-row">
+        <button class="export-btn" onclick="exportCSV()" title="导出为 CSV 文件，可用 Excel 打开">📊 导出 Excel</button>
+        <button class="export-btn" onclick="exportText()" title="导出为纯文本文件">📄 导出文本</button>
+        <button class="export-btn" onclick="exportPDF()" title="通过浏览器打印为 PDF">🖨️ 导出 PDF</button>
       </div>
 
       <!-- Sync indicator -->
@@ -1121,6 +1175,89 @@ html, body {
       }
     }
   });
+
+  // ============================
+  //  Export Functions
+  // ============================
+  const CAT_LABELS = { likes: '爱吃', dislikes: '不喜欢吃', allergies: '过敏' };
+  const CAT_EMOJI = { likes: '❤️', dislikes: '👎', allergies: '⚠️' };
+
+  function getCategoryItems() {
+    return {
+      likes: foodItems.filter(f => f.category === 'likes').map(f => f.name),
+      dislikes: foodItems.filter(f => f.category === 'dislikes').map(f => f.name),
+      allergies: foodItems.filter(f => f.category === 'allergies').map(f => f.name),
+    };
+  }
+
+  function downloadBlob(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function exportCSV() {
+    if (foodItems.length === 0) {
+      showToast('暂无数据可导出');
+      return;
+    }
+
+    // UTF-8 BOM for Excel to recognize Chinese
+    let csv = '﻿分类,食物名称\n';
+    for (const item of foodItems) {
+      csv += `${CAT_LABELS[item.category]},${item.name}\n`;
+    }
+
+    const date = new Date().toISOString().slice(0, 10);
+    downloadBlob(csv, `美食偏好_${date}.csv`, 'text/csv;charset=utf-8');
+    showToast('已导出 CSV 文件');
+  }
+
+  function exportText() {
+    if (foodItems.length === 0) {
+      showToast('暂无数据可导出');
+      return;
+    }
+
+    const data = getCategoryItems();
+    const date = new Date().toISOString().slice(0, 10);
+    let text = `美食偏好记录\n`;
+    text += `导出日期：${date}\n`;
+    text += `${'='.repeat(30)}\n\n`;
+
+    for (const cat of ['likes', 'dislikes', 'allergies']) {
+      text += `${CAT_EMOJI[cat]} ${CAT_LABELS[cat]}：\n`;
+      if (data[cat].length === 0) {
+        text += '（无）\n';
+      } else {
+        data[cat].forEach(name => { text += `  • ${name}\n`; });
+      }
+      text += '\n';
+    }
+
+    downloadBlob(text, `美食偏好_${date}.txt`, 'text/plain;charset=utf-8');
+    showToast('已导出文本文件');
+  }
+
+  function exportPDF() {
+    if (foodItems.length === 0) {
+      showToast('暂无数据可导出');
+      return;
+    }
+    showToast('正在打开打印对话框…', 1500);
+    setTimeout(() => window.print(), 300);
+  }
+
+  // Expose to global scope
+  window.exportCSV = exportCSV;
+  window.exportText = exportText;
+  window.exportPDF = exportPDF;
 
   // ============================
   //  Init

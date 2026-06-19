@@ -36,7 +36,7 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 html, body {
-  min-height: 100%;
+  height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
   background: var(--bg);
   color: var(--text);
@@ -48,6 +48,127 @@ html, body {
 
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-thumb { background: var(--text-muted); border-radius: 3px; }
+
+/* ===== App Wrapper ===== */
+.app-wrapper {
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== View Switching ===== */
+.view {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  overflow-y: auto;
+}
+.view.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ===== Login View ===== */
+.login-view {
+  align-items: center;
+  justify-content: center;
+  padding: 30px 20px;
+  background: var(--bg);
+  gap: 20px;
+}
+.login-view .login-icon {
+  font-size: 64px;
+  animation: bounce 2s ease infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.login-view h1 {
+  font-size: var(--font-xl);
+  color: var(--text);
+  letter-spacing: 2px;
+  text-align: center;
+}
+.login-view .login-subtitle {
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+  text-align: center;
+  margin-bottom: 4px;
+}
+.login-card {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.login-card label {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.login-card .form-input {
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: var(--radius-xs);
+  border: 2px solid #e8dbce;
+  font-size: var(--font-md);
+  font-family: inherit;
+  background: #fdfcfb;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.25s;
+  margin-top: 4px;
+}
+.login-card .form-input:focus { border-color: var(--dislikes); }
+.login-error {
+  color: var(--allergies);
+  font-size: var(--font-sm);
+  text-align: center;
+  min-height: 20px;
+  font-weight: 500;
+}
+.btn-login {
+  width: 100%;
+  padding: 16px;
+  border-radius: 50px;
+  border: none;
+  background: var(--likes);
+  color: #fff;
+  font-size: var(--font-md);
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn-login:hover { background: var(--likes-dark); }
+.btn-login:active { transform: scale(0.97); }
+.btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
+.login-footer {
+  text-align: center;
+  font-size: var(--font-sm);
+}
+.login-footer a {
+  color: var(--dislikes-dark);
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.login-footer a:hover { color: var(--dislikes); }
+
+/* ===== Main View ===== */
+.main-view { overflow-y: auto; }
 
 /* ===== App Container ===== */
 .app {
@@ -79,6 +200,39 @@ html, body {
   font-size: var(--font-sm);
   color: var(--text-muted);
   margin-top: 4px;
+}
+
+/* ===== User Bar ===== */
+.user-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 6px 0 10px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.user-bar .user-email {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
+}
+.user-bar .logout-btn {
+  background: none;
+  border: 1px solid var(--text-muted);
+  color: var(--text-muted);
+  padding: 4px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-family: inherit;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.user-bar .logout-btn:hover {
+  border-color: var(--allergies);
+  color: var(--allergies);
 }
 
 /* ===== Sync indicator ===== */
@@ -370,105 +524,149 @@ html, body {
   .add-input { max-width: 180px; padding: 9px 14px; }
   .header { padding: 16px 0 4px; }
   .header .icon { font-size: 40px; }
+  .login-card { padding: 24px 18px; gap: 14px; }
+  .login-view .login-icon { font-size: 48px; }
 }
 
 @media (max-width: 360px) {
   .app { padding: 12px 8px 60px; }
   .category { padding: 14px 12px 10px; }
   .add-input { max-width: 140px; }
+  .login-card { padding: 20px 14px; }
 }
 </style>
 </head>
 <body>
-<div class="app">
-  <!-- Header -->
-  <div class="header">
-    <div class="icon">🍽️</div>
-    <h1>美食偏好管理</h1>
-    <p class="subtitle">记录朋友的口味与禁忌</p>
-  </div>
+<div class="app-wrapper">
 
-  <!-- Sync indicator -->
-  <div class="sync-bar" id="syncBar">
-    <span class="dot" id="syncDot"></span>
-    <span id="syncText">已同步</span>
-  </div>
+  <!-- ==================== Login View ==================== -->
+  <div class="view active" id="loginView">
+    <div class="login-view">
+      <div class="login-icon">🍽️</div>
+      <h1>美食偏好管理</h1>
+      <p class="login-subtitle">登录以管理朋友的口味与禁忌</p>
 
-  <!-- Category: Likes -->
-  <div class="category likes" id="cat-likes">
-    <div class="category-header">
-      <div class="cat-icon">❤️</div>
-      <span class="cat-title">爱吃</span>
-      <span class="cat-count" id="count-likes">0</span>
-    </div>
-    <div class="chips" id="chips-likes"></div>
-    <div class="empty-state" id="empty-likes">
-      <span class="empty-icon">🍲</span>
-      <span>还没有记录，点击下方添加吧</span>
-    </div>
-    <div class="add-row" id="addRow-likes">
-      <button class="add-btn" id="addBtn-likes" onclick="showAddForm('likes')">
-        <span class="plus">+</span> 添加爱吃
-      </button>
-      <div class="add-form" id="addForm-likes">
-        <input class="add-input" id="addInput-likes" type="text" placeholder="输入食物名称…" maxlength="50">
-        <button class="form-confirm" onclick="confirmAdd('likes')" title="确认">✓</button>
-        <button class="form-cancel" onclick="cancelAdd('likes')" title="取消">✕</button>
+      <div class="login-card">
+        <div>
+          <label for="loginEmail">📧 邮箱</label>
+          <input class="form-input" type="email" id="loginEmail"
+                 placeholder="输入邮箱地址" autocomplete="email" inputmode="email">
+        </div>
+        <div>
+          <label for="loginPassword">🔒 密码</label>
+          <input class="form-input" type="password" id="loginPassword"
+                 placeholder="输入密码" autocomplete="current-password">
+        </div>
+        <p class="login-error" id="loginError"></p>
+        <button class="btn-login" id="loginBtn">🔐 登录</button>
+      </div>
+
+      <div class="login-footer">
+        <a id="showSignupLink" onclick="toggleSignupMode()">首次使用？创建账号</a>
       </div>
     </div>
   </div>
 
-  <!-- Category: Dislikes -->
-  <div class="category dislikes" id="cat-dislikes">
-    <div class="category-header">
-      <div class="cat-icon">👎</div>
-      <span class="cat-title">不喜欢吃</span>
-      <span class="cat-count" id="count-dislikes">0</span>
-    </div>
-    <div class="chips" id="chips-dislikes"></div>
-    <div class="empty-state" id="empty-dislikes">
-      <span class="empty-icon">🥬</span>
-      <span>还没有记录，点击下方添加吧</span>
-    </div>
-    <div class="add-row" id="addRow-dislikes">
-      <button class="add-btn" id="addBtn-dislikes" onclick="showAddForm('dislikes')">
-        <span class="plus">+</span> 添加不喜欢
-      </button>
-      <div class="add-form" id="addForm-dislikes">
-        <input class="add-input" id="addInput-dislikes" type="text" placeholder="输入食物名称…" maxlength="50">
-        <button class="form-confirm" onclick="confirmAdd('dislikes')" title="确认">✓</button>
-        <button class="form-cancel" onclick="cancelAdd('dislikes')" title="取消">✕</button>
+  <!-- ==================== Main View ==================== -->
+  <div class="view main-view" id="mainView">
+    <div class="app">
+      <!-- Header -->
+      <div class="header">
+        <div class="icon">🍽️</div>
+        <h1>美食偏好管理</h1>
+        <p class="subtitle">记录朋友的口味与禁忌</p>
       </div>
+
+      <!-- User bar -->
+      <div class="user-bar">
+        <span class="user-email" id="userEmail"></span>
+        <button class="logout-btn" id="logoutBtn" onclick="doLogout()">退出登录</button>
+      </div>
+
+      <!-- Sync indicator -->
+      <div class="sync-bar" id="syncBar">
+        <span class="dot" id="syncDot"></span>
+        <span id="syncText">已同步</span>
+      </div>
+
+      <!-- Category: Likes -->
+      <div class="category likes" id="cat-likes">
+        <div class="category-header">
+          <div class="cat-icon">❤️</div>
+          <span class="cat-title">爱吃</span>
+          <span class="cat-count" id="count-likes">0</span>
+        </div>
+        <div class="chips" id="chips-likes"></div>
+        <div class="empty-state" id="empty-likes">
+          <span class="empty-icon">🍲</span>
+          <span>还没有记录，点击下方添加吧</span>
+        </div>
+        <div class="add-row" id="addRow-likes">
+          <button class="add-btn" id="addBtn-likes" onclick="showAddForm('likes')">
+            <span class="plus">+</span> 添加爱吃
+          </button>
+          <div class="add-form" id="addForm-likes">
+            <input class="add-input" id="addInput-likes" type="text" placeholder="输入食物名称…" maxlength="50">
+            <button class="form-confirm" onclick="confirmAdd('likes')" title="确认">✓</button>
+            <button class="form-cancel" onclick="cancelAdd('likes')" title="取消">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category: Dislikes -->
+      <div class="category dislikes" id="cat-dislikes">
+        <div class="category-header">
+          <div class="cat-icon">👎</div>
+          <span class="cat-title">不喜欢吃</span>
+          <span class="cat-count" id="count-dislikes">0</span>
+        </div>
+        <div class="chips" id="chips-dislikes"></div>
+        <div class="empty-state" id="empty-dislikes">
+          <span class="empty-icon">🥬</span>
+          <span>还没有记录，点击下方添加吧</span>
+        </div>
+        <div class="add-row" id="addRow-dislikes">
+          <button class="add-btn" id="addBtn-dislikes" onclick="showAddForm('dislikes')">
+            <span class="plus">+</span> 添加不喜欢
+          </button>
+          <div class="add-form" id="addForm-dislikes">
+            <input class="add-input" id="addInput-dislikes" type="text" placeholder="输入食物名称…" maxlength="50">
+            <button class="form-confirm" onclick="confirmAdd('dislikes')" title="确认">✓</button>
+            <button class="form-cancel" onclick="cancelAdd('dislikes')" title="取消">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category: Allergies -->
+      <div class="category allergies" id="cat-allergies">
+        <div class="category-header">
+          <div class="cat-icon">⚠️</div>
+          <span class="cat-title">过敏</span>
+          <span class="cat-count" id="count-allergies">0</span>
+        </div>
+        <div class="chips" id="chips-allergies"></div>
+        <div class="empty-state" id="empty-allergies">
+          <span class="empty-icon">🫘</span>
+          <span>还没有记录，点击下方添加吧</span>
+        </div>
+        <div class="add-row" id="addRow-allergies">
+          <button class="add-btn" id="addBtn-allergies" onclick="showAddForm('allergies')">
+            <span class="plus">+</span> 添加过敏
+          </button>
+          <div class="add-form" id="addForm-allergies">
+            <input class="add-input" id="addInput-allergies" type="text" placeholder="输入食物名称…" maxlength="50">
+            <button class="form-confirm" onclick="confirmAdd('allergies')" title="确认">✓</button>
+            <button class="form-cancel" onclick="cancelAdd('allergies')" title="取消">✕</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer summary -->
+      <div class="footer-summary" id="footerSummary"></div>
     </div>
   </div>
 
-  <!-- Category: Allergies -->
-  <div class="category allergies" id="cat-allergies">
-    <div class="category-header">
-      <div class="cat-icon">⚠️</div>
-      <span class="cat-title">过敏</span>
-      <span class="cat-count" id="count-allergies">0</span>
-    </div>
-    <div class="chips" id="chips-allergies"></div>
-    <div class="empty-state" id="empty-allergies">
-      <span class="empty-icon">🫘</span>
-      <span>还没有记录，点击下方添加吧</span>
-    </div>
-    <div class="add-row" id="addRow-allergies">
-      <button class="add-btn" id="addBtn-allergies" onclick="showAddForm('allergies')">
-        <span class="plus">+</span> 添加过敏
-      </button>
-      <div class="add-form" id="addForm-allergies">
-        <input class="add-input" id="addInput-allergies" type="text" placeholder="输入食物名称…" maxlength="50">
-        <button class="form-confirm" onclick="confirmAdd('allergies')" title="确认">✓</button>
-        <button class="form-cancel" onclick="cancelAdd('allergies')" title="取消">✕</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Footer summary -->
-  <div class="footer-summary" id="footerSummary"></div>
-</div>
+</div><!-- /.app-wrapper -->
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
@@ -477,328 +675,490 @@ html, body {
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
 <script>
-// ============================
-//  Supabase Init
-// ============================
-const SUPABASE_URL = 'https://mbkdigtofgmdkepwsrve.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ia2RpZ3RvZmdtZGtlcHdzcnZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2OTMyMjcsImV4cCI6MjA5NzI2OTIyN30.BGlRJJbL6BvcZC1XrZTeN_3AOiiQgiAKniXfREunzeQ';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+(function() {
+  'use strict';
 
-// ============================
-//  App State
-// ============================
-let foodItems = [];
-let realtimeChannel = null;
-let currentAddCategory = null;
+  // ============================
+  //  Supabase Init
+  // ============================
+  const SUPABASE_URL = 'https://mbkdigtofgmdkepwsrve.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ia2RpZ3RvZmdtZGtlcHdzcnZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2OTMyMjcsImV4cCI6MjA5NzI2OTIyN30.BGlRJJbL6BvcZC1XrZTeN_3AOiiQgiAKniXfREunzeQ';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ============================
-//  DOM Helpers
-// ============================
-function $(selector) { return document.querySelector(selector); }
+  // ============================
+  //  App State
+  // ============================
+  let foodItems = [];
+  let realtimeChannel = null;
+  let currentAddCategory = null;
+  let currentUser = null;
+  let signupMode = false;
 
-// ============================
-//  Toast
-// ============================
-const toast = $('#toast');
-let toastTimer = null;
+  // ============================
+  //  DOM Helpers
+  // ============================
+  function $(selector) { return document.querySelector(selector); }
 
-function showToast(msg, duration = 2000) {
-  if (toastTimer) clearTimeout(toastTimer);
-  toast.textContent = msg;
-  toast.classList.add('show');
-  toastTimer = setTimeout(() => {
-    toast.classList.remove('show');
-    toastTimer = null;
-  }, duration);
-}
+  // ============================
+  //  Toast
+  // ============================
+  const toast = $('#toast');
+  let toastTimer = null;
 
-// ============================
-//  HTML Escape
-// ============================
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str || '';
-  return div.innerHTML;
-}
-
-// ============================
-//  Supabase Operations
-// ============================
-async function loadFoodItems() {
-  const { data, error } = await supabase
-    .from('food_items')
-    .select('*')
-    .order('sort_order', { ascending: true });
-
-  if (error) {
-    console.error('Failed to load food items:', error);
-    return [];
-  }
-  return data || [];
-}
-
-async function addFoodItem(name, category) {
-  // Get the next sort_order for this category
-  const itemsInCategory = foodItems.filter(f => f.category === category);
-  const nextOrder = itemsInCategory.length > 0
-    ? Math.max(...itemsInCategory.map(f => f.sort_order)) + 1
-    : 0;
-
-  const { data, error } = await supabase
-    .from('food_items')
-    .insert({ name, category, sort_order: nextOrder })
-    .select()
-    .single();
-
-  if (error) {
-    console.error('Failed to add food item:', error);
-    throw error;
-  }
-  return data;
-}
-
-async function deleteFoodItem(id) {
-  const { error } = await supabase
-    .from('food_items')
-    .delete()
-    .eq('id', id);
-
-  if (error) {
-    console.error('Failed to delete food item:', error);
-    throw error;
-  }
-}
-
-// ============================
-//  Realtime
-// ============================
-function subscribeToChanges() {
-  if (realtimeChannel) {
-    supabase.removeChannel(realtimeChannel);
+  function showToast(msg, duration = 2000) {
+    if (toastTimer) clearTimeout(toastTimer);
+    toast.textContent = msg;
+    toast.classList.add('show');
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('show');
+      toastTimer = null;
+    }, duration);
   }
 
-  realtimeChannel = supabase
-    .channel('food-items-changes')
-    .on('postgres_changes',
-      { event: '*', schema: 'public', table: 'food_items' },
-      async (payload) => {
-        // Reload all items on any change
-        setSyncStatus(true);
-        foodItems = await loadFoodItems();
-        renderAll();
-        setTimeout(() => setSyncStatus(false), 600);
+  // ============================
+  //  HTML Escape
+  // ============================
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str || '';
+    return div.innerHTML;
+  }
+
+  // ============================
+  //  View Switching
+  // ============================
+  const loginView = $('#loginView');
+  const mainView = $('#mainView');
+
+  function switchToLogin() {
+    loginView.classList.add('active');
+    mainView.classList.remove('active');
+  }
+
+  function switchToMain(user) {
+    currentUser = user;
+    $('#userEmail').textContent = user.email;
+    loginView.classList.remove('active');
+    mainView.classList.add('active');
+  }
+
+  // ============================
+  //  Auth
+  // ============================
+  const loginEmail = $('#loginEmail');
+  const loginPassword = $('#loginPassword');
+  const loginError = $('#loginError');
+  const loginBtn = $('#loginBtn');
+  const showSignupLink = $('#showSignupLink');
+
+  window.toggleSignupMode = function() {
+    signupMode = !signupMode;
+    if (signupMode) {
+      loginBtn.textContent = '🔑 注册';
+      showSignupLink.textContent = '已有账号？去登录';
+      loginError.textContent = '';
+    } else {
+      loginBtn.textContent = '🔐 登录';
+      showSignupLink.textContent = '首次使用？创建账号';
+      loginError.textContent = '';
+    }
+  };
+
+  async function doLogin() {
+    const email = loginEmail.value.trim();
+    const password = loginPassword.value.trim();
+
+    if (!email) { loginError.textContent = '请输入邮箱地址'; return; }
+    if (!password) { loginError.textContent = '请输入密码'; return; }
+    if (password.length < 6) { loginError.textContent = '密码至少6位'; return; }
+
+    loginBtn.disabled = true;
+    loginError.textContent = '';
+
+    try {
+      if (signupMode) {
+        // Sign up
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: window.location.href }
+        });
+        if (error) throw error;
+        if (data.user) {
+          showToast('✅ 账号创建成功！');
+          signupMode = false;
+          loginBtn.textContent = '🔐 登录';
+          showSignupLink.textContent = '首次使用？创建账号';
+          loginError.textContent = '';
+        }
       }
-    )
-    .subscribe((status) => {
-      if (status === 'SUBSCRIBED') {
-        console.log('✅ Realtime subscribed to food_items');
-      }
-    });
-}
 
-function setSyncStatus(syncing) {
-  const bar = $('#syncBar');
-  const text = $('#syncText');
-  if (syncing) {
-    bar.classList.add('syncing');
-    text.textContent = '同步中…';
-  } else {
-    bar.classList.remove('syncing');
-    text.textContent = '已同步';
-  }
-}
+      // Sign in
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
 
-// ============================
-//  Rendering
-// ============================
-function renderAll() {
-  const categories = ['likes', 'dislikes', 'allergies'];
-  for (const cat of categories) {
-    const items = foodItems.filter(f => f.category === cat);
-    renderCategory(cat, items);
-  }
-  renderFooterSummary();
-}
-
-function renderCategory(category, items) {
-  const chipsContainer = $(`#chips-${category}`);
-  const emptyEl = $(`#empty-${category}`);
-  const countEl = $(`#count-${category}`);
-  const addRow = $(`#addRow-${category}`);
-
-  // Count
-  countEl.textContent = items.length > 0 ? `${items.length} 项` : '';
-
-  // Empty state
-  if (items.length === 0) {
-    emptyEl.style.display = 'flex';
-  } else {
-    emptyEl.style.display = 'none';
-  }
-
-  // Render chips
-  chipsContainer.innerHTML = items.map(item => `
-    <span class="chip" data-id="${item.id}">
-      ${escapeHtml(item.name)}
-      <button class="delete-btn" onclick="handleDelete('${item.id}', '${escapeHtml(item.name).replace(/'/g, "\\'")}')" title="删除">✕</button>
-    </span>
-  `).join('');
-
-  // Keep add row at the end
-  chipsContainer.appendChild(addRow);
-}
-
-function renderFooterSummary() {
-  const likes = foodItems.filter(f => f.category === 'likes').length;
-  const dislikes = foodItems.filter(f => f.category === 'dislikes').length;
-  const allergies = foodItems.filter(f => f.category === 'allergies').length;
-  const total = foodItems.length;
-
-  const footer = $('#footerSummary');
-  if (total === 0) {
-    footer.innerHTML = '<span>📝 开始记录朋友的美食偏好吧</span>';
-  } else {
-    footer.innerHTML = `
-      <span>❤️ ${likes} 爱吃</span>
-      <span>👎 ${dislikes} 不吃</span>
-      <span>⚠️ ${allergies} 过敏</span>
-      <span>📋 共 ${total} 项</span>
-    `;
-  }
-}
-
-// ============================
-//  Add Form Logic
-// ============================
-function showAddForm(category) {
-  // Hide any other open form first
-  const allForms = document.querySelectorAll('.add-form');
-  const allBtns = document.querySelectorAll('.add-btn');
-  allForms.forEach(f => f.classList.remove('active'));
-  allBtns.forEach(b => b.style.display = '');
-
-  const btn = $(`#addBtn-${category}`);
-  const form = $(`#addForm-${category}`);
-  const input = $(`#addInput-${category}`);
-
-  btn.style.display = 'none';
-  form.classList.add('active');
-  input.value = '';
-  input.focus();
-  currentAddCategory = category;
-}
-
-function cancelAdd(category) {
-  const btn = $(`#addBtn-${category}`);
-  const form = $(`#addForm-${category}`);
-  const input = $(`#addInput-${category}`);
-
-  form.classList.remove('active');
-  input.value = '';
-  btn.style.display = '';
-  currentAddCategory = null;
-}
-
-async function confirmAdd(category) {
-  const input = $(`#addInput-${category}`);
-  const name = input.value.trim();
-
-  if (!name) {
-    showToast('请输入食物名称');
-    input.focus();
-    return;
-  }
-
-  // Check for duplicates in the same category
-  const duplicate = foodItems.find(
-    f => f.category === category && f.name === name
-  );
-  if (duplicate) {
-    showToast('该食物已存在于此分类中');
-    input.focus();
-    return;
-  }
-
-  try {
-    await addFoodItem(name, category);
-    showToast(`已添加「${name}」`);
-    cancelAdd(category);
-    // Reload and re-render
-    foodItems = await loadFoodItems();
-    renderAll();
-  } catch (e) {
-    showToast('添加失败，请检查网络连接');
-    console.error(e);
-  }
-}
-
-// ============================
-//  Delete Logic
-// ============================
-async function handleDelete(id, name) {
-  if (!confirm(`确定要删除「${name}」吗？`)) return;
-
-  // Add removing animation
-  const chip = document.querySelector(`.chip[data-id="${id}"]`);
-  if (chip) {
-    chip.classList.add('removing');
-    await new Promise(r => setTimeout(r, 250));
-  }
-
-  try {
-    await deleteFoodItem(id);
-    showToast(`已删除「${name}」`);
-    foodItems = await loadFoodItems();
-    renderAll();
-  } catch (e) {
-    showToast('删除失败，请检查网络连接');
-    console.error(e);
-    // Restore chip if failed
-    if (chip) chip.classList.remove('removing');
-  }
-}
-
-// ============================
-//  Keyboard Shortcuts
-// ============================
-document.addEventListener('keydown', (e) => {
-  // Escape to cancel add form
-  if (e.key === 'Escape' && currentAddCategory) {
-    cancelAdd(currentAddCategory);
-    return;
-  }
-  // Enter to confirm add form
-  if (e.key === 'Enter' && currentAddCategory) {
-    const input = $(`#addInput-${currentAddCategory}`);
-    if (document.activeElement === input) {
-      confirmAdd(currentAddCategory);
+      onLoginSuccess(data.user);
+    } catch (err) {
+      loginError.textContent = getAuthErrorMessage(err);
+    } finally {
+      loginBtn.disabled = false;
     }
   }
-});
 
-// ============================
-//  Init
-// ============================
-async function init() {
-  try {
-    setSyncStatus(true);
-    foodItems = await loadFoodItems();
-    renderAll();
-    subscribeToChanges();
-    setSyncStatus(false);
-    console.log(`🍽️ 美食偏好管理已就绪 | ${foodItems.length} 项食物`);
-  } catch (e) {
-    console.error('Failed to initialize:', e);
-    // Show offline empty state
-    renderAll();
-    setSyncStatus(false);
-    $('#syncText').textContent = '离线模式';
-    showToast('无法连接服务器，数据不可用', 3000);
+  function getAuthErrorMessage(err) {
+    const msg = err.message || String(err);
+    if (msg.includes('Invalid login credentials') || msg.includes('Invalid Login'))
+      return '邮箱或密码错误，请重试';
+    if (msg.includes('Email not confirmed'))
+      return '邮箱尚未验证，请先确认邮箱';
+    if (msg.includes('User already registered') || msg.includes('already been registered'))
+      return '该邮箱已注册，请直接登录';
+    if (msg.includes('password') && msg.includes('weak'))
+      return '密码太弱，请使用6位以上密码';
+    if (msg.includes('valid email'))
+      return '请输入有效的邮箱地址';
+    if (msg.includes('rate') || msg.includes('limit'))
+      return '请求太频繁，请稍后再试';
+    if (msg.includes('network') || msg.includes('fetch'))
+      return '网络连接失败，请检查网络';
+    return `登录失败：${msg}`;
   }
-}
 
-// Start
-init();
+  async function onLoginSuccess(user) {
+    loginError.textContent = '';
+    loginPassword.value = '';
+    loginBtn.disabled = false;
+
+    switchToMain(user);
+
+    // Load data and subscribe
+    try {
+      setSyncStatus(true);
+      foodItems = await loadFoodItems();
+      renderAll();
+      subscribeToChanges();
+      setSyncStatus(false);
+      console.log(`🍽️ 美食偏好管理已就绪 | ${foodItems.length} 项食物`);
+    } catch (e) {
+      console.error('Failed to load after login:', e);
+      renderAll();
+      setSyncStatus(false);
+      showToast('数据加载失败，请刷新重试', 3000);
+    }
+  }
+
+  async function doLogout() {
+    if (!confirm('确定要退出登录吗？')) return;
+
+    if (realtimeChannel) {
+      supabase.removeChannel(realtimeChannel);
+      realtimeChannel = null;
+    }
+    await supabase.auth.signOut();
+    currentUser = null;
+    foodItems = [];
+    switchToLogin();
+  }
+
+  // Expose to global scope for onclick handlers
+  window.doLogout = doLogout;
+
+  // Login button event
+  loginBtn.addEventListener('click', doLogin);
+
+  // Enter key to login
+  loginPassword.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') doLogin();
+  });
+  loginEmail.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  // ============================
+  //  Supabase Operations
+  // ============================
+  async function loadFoodItems() {
+    const { data, error } = await supabase
+      .from('food_items')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) {
+      console.error('Failed to load food items:', error);
+      return [];
+    }
+    return data || [];
+  }
+
+  async function addFoodItem(name, category) {
+    const itemsInCategory = foodItems.filter(f => f.category === category);
+    const nextOrder = itemsInCategory.length > 0
+      ? Math.max(...itemsInCategory.map(f => f.sort_order)) + 1
+      : 0;
+
+    const { data, error } = await supabase
+      .from('food_items')
+      .insert({ name, category, sort_order: nextOrder })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Failed to add food item:', error);
+      throw error;
+    }
+    return data;
+  }
+
+  async function deleteFoodItem(id) {
+    const { error } = await supabase
+      .from('food_items')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Failed to delete food item:', error);
+      throw error;
+    }
+  }
+
+  // ============================
+  //  Realtime
+  // ============================
+  function subscribeToChanges() {
+    if (realtimeChannel) {
+      supabase.removeChannel(realtimeChannel);
+    }
+
+    realtimeChannel = supabase
+      .channel('food-items-changes')
+      .on('postgres_changes',
+        { event: '*', schema: 'public', table: 'food_items' },
+        async () => {
+          setSyncStatus(true);
+          foodItems = await loadFoodItems();
+          renderAll();
+          setTimeout(() => setSyncStatus(false), 600);
+        }
+      )
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log('✅ Realtime subscribed to food_items');
+        }
+      });
+  }
+
+  function setSyncStatus(syncing) {
+    const bar = $('#syncBar');
+    const text = $('#syncText');
+    if (syncing) {
+      bar.classList.add('syncing');
+      text.textContent = '同步中…';
+    } else {
+      bar.classList.remove('syncing');
+      text.textContent = '已同步';
+    }
+  }
+
+  // ============================
+  //  Rendering
+  // ============================
+  function renderAll() {
+    const categories = ['likes', 'dislikes', 'allergies'];
+    for (const cat of categories) {
+      const items = foodItems.filter(f => f.category === cat);
+      renderCategory(cat, items);
+    }
+    renderFooterSummary();
+  }
+
+  function renderCategory(category, items) {
+    const chipsContainer = $(`#chips-${category}`);
+    const emptyEl = $(`#empty-${category}`);
+    const countEl = $(`#count-${category}`);
+    const addRow = $(`#addRow-${category}`);
+
+    countEl.textContent = items.length > 0 ? `${items.length} 项` : '';
+
+    if (items.length === 0) {
+      emptyEl.style.display = 'flex';
+    } else {
+      emptyEl.style.display = 'none';
+    }
+
+    chipsContainer.innerHTML = items.map(item => `
+      <span class="chip" data-id="${item.id}">
+        ${escapeHtml(item.name)}
+        <button class="delete-btn" onclick="handleDelete('${item.id}', '${escapeHtml(item.name).replace(/'/g, "\\'")}')" title="删除">✕</button>
+      </span>
+    `).join('');
+
+    chipsContainer.appendChild(addRow);
+  }
+
+  function renderFooterSummary() {
+    const likes = foodItems.filter(f => f.category === 'likes').length;
+    const dislikes = foodItems.filter(f => f.category === 'dislikes').length;
+    const allergies = foodItems.filter(f => f.category === 'allergies').length;
+    const total = foodItems.length;
+
+    const footer = $('#footerSummary');
+    if (total === 0) {
+      footer.innerHTML = '<span>📝 开始记录朋友的美食偏好吧</span>';
+    } else {
+      footer.innerHTML = `
+        <span>❤️ ${likes} 爱吃</span>
+        <span>👎 ${dislikes} 不吃</span>
+        <span>⚠️ ${allergies} 过敏</span>
+        <span>📋 共 ${total} 项</span>
+      `;
+    }
+  }
+
+  // ============================
+  //  Add Form Logic
+  // ============================
+  function showAddForm(category) {
+    const allForms = document.querySelectorAll('.add-form');
+    const allBtns = document.querySelectorAll('.add-btn');
+    allForms.forEach(f => f.classList.remove('active'));
+    allBtns.forEach(b => b.style.display = '');
+
+    const btn = $(`#addBtn-${category}`);
+    const form = $(`#addForm-${category}`);
+    const input = $(`#addInput-${category}`);
+
+    btn.style.display = 'none';
+    form.classList.add('active');
+    input.value = '';
+    input.focus();
+    currentAddCategory = category;
+  }
+
+  function cancelAdd(category) {
+    const btn = $(`#addBtn-${category}`);
+    const form = $(`#addForm-${category}`);
+    const input = $(`#addInput-${category}`);
+
+    form.classList.remove('active');
+    input.value = '';
+    btn.style.display = '';
+    currentAddCategory = null;
+  }
+
+  async function confirmAdd(category) {
+    const input = $(`#addInput-${category}`);
+    const name = input.value.trim();
+
+    if (!name) {
+      showToast('请输入食物名称');
+      input.focus();
+      return;
+    }
+
+    const duplicate = foodItems.find(
+      f => f.category === category && f.name === name
+    );
+    if (duplicate) {
+      showToast('该食物已存在于此分类中');
+      input.focus();
+      return;
+    }
+
+    try {
+      await addFoodItem(name, category);
+      showToast(`已添加「${name}」`);
+      cancelAdd(category);
+      foodItems = await loadFoodItems();
+      renderAll();
+    } catch (e) {
+      showToast('添加失败，请检查网络连接');
+      console.error(e);
+    }
+  }
+
+  // ============================
+  //  Delete Logic
+  // ============================
+  async function handleDelete(id, name) {
+    if (!confirm(`确定要删除「${name}」吗？`)) return;
+
+    const chip = document.querySelector(`.chip[data-id="${id}"]`);
+    if (chip) {
+      chip.classList.add('removing');
+      await new Promise(r => setTimeout(r, 250));
+    }
+
+    try {
+      await deleteFoodItem(id);
+      showToast(`已删除「${name}」`);
+      foodItems = await loadFoodItems();
+      renderAll();
+    } catch (e) {
+      showToast('删除失败，请检查网络连接');
+      console.error(e);
+      if (chip) chip.classList.remove('removing');
+    }
+  }
+
+  // Expose to global scope for onclick handlers
+  window.showAddForm = showAddForm;
+  window.cancelAdd = cancelAdd;
+  window.confirmAdd = confirmAdd;
+  window.handleDelete = handleDelete;
+
+  // ============================
+  //  Keyboard Shortcuts
+  // ============================
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && currentAddCategory) {
+      cancelAdd(currentAddCategory);
+      return;
+    }
+    if (e.key === 'Enter' && currentAddCategory) {
+      const input = $(`#addInput-${currentAddCategory}`);
+      if (document.activeElement === input) {
+        confirmAdd(currentAddCategory);
+      }
+    }
+  });
+
+  // ============================
+  //  Init
+  // ============================
+  async function init() {
+    // Check for existing session
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        onLoginSuccess(session.user);
+        return;
+      }
+    } catch (e) {
+      console.warn('Session check failed:', e);
+    }
+
+    // No session → show login
+    switchToLogin();
+
+    // Listen for auth state changes
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        onLoginSuccess(session.user);
+      } else if (event === 'SIGNED_OUT') {
+        if (realtimeChannel) {
+          supabase.removeChannel(realtimeChannel);
+          realtimeChannel = null;
+        }
+        currentUser = null;
+        foodItems = [];
+        switchToLogin();
+      }
+    });
+  }
+
+  // Start
+  init();
+})();
 </script>
 </body>
 </html>

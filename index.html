@@ -43,8 +43,8 @@
   --shadow: 0 2px 12px rgba(92,110,98,0.08);
   --shadow-lg: 0 4px 20px rgba(92,110,98,0.12);
   /* Stronger crayon shadow — mimics pencil outline */
-  --crayon-shadow: 3px 4px 0 rgba(92,110,98,0.07);
-  --crayon-shadow-hover: 4px 6px 0 rgba(92,110,98,0.10);
+  --crayon-shadow: 3px 4px 0 rgba(92,110,98,0.09);
+  --crayon-shadow-hover: 5px 7px 0 rgba(92,110,98,0.13);
 
   /* Category Colors */
   --likes: #78C2A4;
@@ -82,8 +82,12 @@
   /* Hand-drawn paper texture — more visible */
   --paper-texture: repeating-linear-gradient(
     0deg, transparent, transparent 1px,
-    rgba(160,150,130,0.018) 1px, rgba(160,150,130,0.018) 3px
+    rgba(160,150,130,0.022) 1px, rgba(160,150,130,0.022) 3px
   );
+
+  /* Decoration color */
+  --deco-leaf: #78C2A4;
+  --deco-vine: #9DB89F;
 }
 
 /* Groups & tabs variables */
@@ -117,6 +121,28 @@ body::before {
   content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background: var(--paper-texture);
   opacity: 0.7;
+}
+/* Secondary noise grain for more paper feel */
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.6;
+}
+
+/* ===== Hand-drawn Sketch Border via SVG filter ===== */
+.sketch-border {
+  filter: url(#sketch-edge);
+}
+/* Apply sketch filter to key cards on hover for performance */
+.friend-card, .group-card, .category, .login-card, .group-friend-card {
+  border-width: 1.8px;
+  border-style: solid;
+  border-color: var(--border);
+  /* Rough border-radius for hand-drawn feel */
+  border-radius: 18px 22px 16px 24px;
+}
+.friend-card:hover, .group-card:hover, .category:hover, .group-friend-card:hover {
+  filter: url(#sketch-edge);
 }
 
 ::-webkit-scrollbar { width: 6px; }
@@ -156,6 +182,25 @@ body::before {
   border-radius: 1px 3px 2px 1px;
   opacity: 0.6;
 }
+/* Leaf decorations on headers */
+.header h1 { position: relative; display: inline-block; }
+.header h1::before {
+  content: '🌿'; position: absolute; top: -8px; left: -32px;
+  font-size: 18px; transform: rotate(-30deg); opacity: 0.6;
+  pointer-events: none;
+}
+.detail-header h1 { position: relative; display: inline-block; }
+.detail-header h1::before {
+  content: '🍃'; position: absolute; top: -6px; right: -28px;
+  font-size: 16px; transform: rotate(20deg); opacity: 0.5;
+  pointer-events: none;
+}
+.group-detail-header h1 { position: relative; display: inline-block; }
+.group-detail-header h1::before {
+  content: '🌱'; position: absolute; top: -6px; left: -24px;
+  font-size: 14px; transform: rotate(-25deg); opacity: 0.5;
+  pointer-events: none;
+}
 
 /* ===== App Wrapper ===== */
 .app-wrapper { height: 100%; position: relative; overflow: hidden; }
@@ -172,6 +217,7 @@ body::before {
 /* ===== Common: App Container ===== */
 .app {
   max-width: 700px; margin: 0 auto; padding: 24px 20px 60px;
+  position: relative;
 }
 
 /* ===== Common: Header ===== */
@@ -441,7 +487,7 @@ body::before {
   box-shadow: var(--shadow), var(--crayon-shadow);
   transition: box-shadow 0.3s ease, transform 0.2s ease;
   border: 1.2px solid var(--border-soft);
-  position: relative; overflow: hidden;
+  position: relative; overflow: visible;
   transform: rotate(-0.1deg);
 }
 .category:nth-child(even) { transform: rotate(0.1deg); }
@@ -495,7 +541,20 @@ body::before {
   cursor: default; animation: chipIn 0.3s ease;
   border: 1px solid var(--border-soft);
   box-shadow: 1px 2px 0 rgba(0,0,0,0.03);
+  position: relative;
+  padding-left: 26px;
 }
+/* Colored dot prefix on chips */
+.chip::before {
+  content: '';
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--text-light);
+}
+.category.likes .chip::before { background: var(--likes); }
+.category.dislikes .chip::before { background: var(--dislikes); }
+.category.allergies .chip::before { background: var(--allergies); }
 .chip:hover {
   transform: translateY(-2px);
   box-shadow: 3px 5px 0 rgba(0,0,0,0.06), 0 6px 20px rgba(0,0,0,0.08);
@@ -658,13 +717,13 @@ body::before {
   transition: color 0.2s, transform 0.2s;
   border-radius: var(--radius-sm); position: relative;
 }
-/* Sketchy indicator dot above active tab */
+/* Sketchy indicator bar under active tab — thicker green line */
 .tab-btn::before {
-  content: ''; position: absolute; top: 0; left: 50%;
+  content: ''; position: absolute; bottom: 0; left: 50%;
   transform: translateX(-50%) scaleX(0);
-  width: 24px; height: 4px;
-  border-radius: 2px 3px 1px 3px;
-  background: var(--tab-active);
+  width: 32px; height: 5px;
+  border-radius: 3px 4px 2px 3px;
+  background: var(--primary);
   transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1);
 }
 .tab-btn.active::before { transform: translateX(-50%) scaleX(1); }
@@ -885,37 +944,7 @@ body::before {
   text-align: center; padding: 40px 20px; color: var(--text-light); font-size: var(--font-sm);
 }
 
-.log-entry {
-  display: flex; gap: 10px; padding: 10px 0;
-  border-bottom: 1px solid var(--border-soft);
-}
-.log-entry:last-child { border-bottom: none; }
-.log-entry .log-icon {
-  width: 30px; height: 30px; border-radius: 48% 52% 50% 51%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 16px; font-weight: 700; flex-shrink: 0; color: #fff;
-  box-shadow: 1px 2px 0 rgba(0,0,0,0.08);
-}
-.log-entry.add .log-icon { background: var(--log-add); }
-.log-entry.delete .log-icon { background: var(--log-delete); }
-.log-entry .log-body { flex: 1; min-width: 0; }
-.log-entry .log-text { font-size: var(--font-sm); color: var(--text); line-height: 1.5; }
-.log-entry .log-text strong { color: var(--text); }
-.log-entry .log-text .log-cat {
-  display: inline-block; padding: 0 8px; border-radius: 6px 8px 5px 7px;
-  font-size: 0.7rem; font-weight: 500; margin-left: 4px;
-}
-.log-entry .log-text .log-cat.likes { background: var(--likes-light); color: var(--likes-deep); }
-.log-entry .log-text .log-cat.dislikes { background: var(--dislikes-light); color: var(--dislikes-deep); }
-.log-entry .log-text .log-cat.allergies { background: var(--allergies-light); color: var(--allergies-deep); }
-.log-entry .log-meta {
-  font-size: 0.72rem; color: var(--text-light); margin-top: 3px;
-  display: flex; align-items: center; gap: 6px;
-}
-.log-entry .log-meta .log-user {
-  background: var(--group-light); color: var(--group-deep);
-  padding: 0 6px; border-radius: var(--radius-xs); font-size: 0.68rem;
-}
+/* log-entry styles are defined in the Activity Feed section below */
 
 /* ===== Skeleton Loading ===== */
 .skeleton {
@@ -947,6 +976,119 @@ body::before {
 .friend-card:nth-child(5), .group-card:nth-child(5) { animation-delay: 0.25s; }
 .friend-card:nth-child(6), .group-card:nth-child(6) { animation-delay: 0.30s; }
 
+/* ===== Stats Overview Cards ===== */
+.stats-overview {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin-bottom: 20px;
+  animation: cardSlideUp 0.4s ease backwards;
+}
+.stat-card {
+  background: var(--card);
+  border-radius: 16px 19px 15px 18px;
+  padding: 16px 14px;
+  text-align: center;
+  box-shadow: var(--shadow), var(--crayon-shadow);
+  border: 1.5px solid var(--border-soft);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg), var(--crayon-shadow-hover);
+}
+.stat-card::before {
+  content: ''; position: absolute; top: 0; left: -2px; right: -2px;
+  height: 4px; border-radius: 3px 4px 2px 3px;
+}
+.stat-card.stat-foods::before { background: var(--primary); }
+.stat-card.stat-categories::before { background: var(--accent-yellow); }
+.stat-card.stat-friends::before { background: var(--accent-blue); }
+.stat-card .stat-icon {
+  font-size: 28px; margin-bottom: 4px; display: block;
+}
+.stat-card .stat-number {
+  font-size: 1.8rem; font-weight: 800; line-height: 1.1;
+  font-family: 'ZCOOL QingKe HuangYou', sans-serif;
+}
+.stat-card.stat-foods .stat-number { color: var(--primary-deep); }
+.stat-card.stat-categories .stat-number { color: #D4A03A; }
+.stat-card.stat-friends .stat-number { color: #7AB0C4; }
+.stat-card .stat-label {
+  font-size: 0.72rem; color: var(--text-light); margin-top: 2px;
+  font-weight: 500;
+}
+
+/* ===== Activity Feed / Edit Log Timeline ===== */
+.log-entry {
+  display: flex; gap: 12px; padding: 14px 0;
+  border-bottom: 1px solid var(--border-soft);
+  position: relative;
+}
+.log-entry:last-child { border-bottom: none; }
+/* Timeline vertical line */
+.log-entry::before {
+  content: ''; position: absolute; left: 15px; top: 44px;
+  width: 2px; bottom: 0;
+  background: var(--border-soft);
+  border-radius: 1px;
+}
+.log-entry:last-child::before { display: none; }
+.log-entry .log-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700; flex-shrink: 0; color: #fff;
+  box-shadow: 2px 3px 0 rgba(0,0,0,0.1);
+  z-index: 1;
+}
+.log-entry.add .log-icon { background: var(--log-add); }
+.log-entry.delete .log-icon { background: var(--log-delete); }
+.log-entry .log-body { flex: 1; min-width: 0; }
+.log-entry .log-text { font-size: var(--font-sm); color: var(--text); line-height: 1.6; }
+.log-entry .log-text strong { color: var(--text); }
+.log-entry .log-text .log-cat {
+  display: inline-block; padding: 1px 10px; border-radius: 10px 12px 9px 11px;
+  font-size: 0.7rem; font-weight: 600; margin-left: 4px;
+}
+.log-entry .log-text .log-cat.likes { background: var(--likes-light); color: var(--likes-deep); }
+.log-entry .log-text .log-cat.dislikes { background: var(--dislikes-light); color: var(--dislikes-deep); }
+.log-entry .log-text .log-cat.allergies { background: var(--allergies-light); color: var(--allergies-deep); }
+.log-entry .log-meta {
+  font-size: 0.72rem; color: var(--text-light); margin-top: 4px;
+  display: flex; align-items: center; gap: 8px;
+}
+.log-entry .log-meta .log-user {
+  background: var(--group-light); color: var(--group-deep);
+  padding: 1px 8px; border-radius: 8px 10px 7px 9px; font-size: 0.68rem;
+  font-weight: 500;
+}
+
+/* ===== Hand-drawn Food Illustrations (decorative) ===== */
+.food-deco {
+  position: absolute; pointer-events: none; opacity: 0.12;
+  font-size: 40px; z-index: 0;
+}
+.food-deco-1 { top: 120px; right: 10px; transform: rotate(15deg); }
+.food-deco-2 { top: 350px; left: 5px; transform: rotate(-20deg); }
+.food-deco-3 { bottom: 200px; right: 15px; transform: rotate(10deg); }
+
+/* ===== Category cards — leaf corner decorations ===== */
+.category.likes::after {
+  content: '🌿'; position: absolute; top: -8px; right: -6px;
+  font-size: 16px; transform: rotate(25deg); opacity: 0.4;
+  pointer-events: none;
+}
+.category.dislikes::after {
+  content: '🍂'; position: absolute; top: -8px; right: -6px;
+  font-size: 14px; transform: rotate(15deg); opacity: 0.35;
+  pointer-events: none;
+}
+.category.allergies::after {
+  content: '🍃'; position: absolute; top: -8px; right: -6px;
+  font-size: 15px; transform: rotate(-20deg); opacity: 0.35;
+  pointer-events: none;
+}
+
 /* ===== Responsive: Small phones ===== */
 @media (max-width: 480px) {
   .app { padding: 16px 12px 60px; }
@@ -959,6 +1101,10 @@ body::before {
   .friend-add-input { max-width: 160px; }
   .add-input { max-width: 180px; padding: 9px 14px; }
   .login-card { padding: 28px 20px; border-radius: var(--radius-lg); }
+  .stats-overview { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat-card { padding: 12px 10px; }
+  .stat-card .stat-number { font-size: 1.5rem; }
+  .stat-card .stat-icon { font-size: 22px; }
 }
 
 /* ===== Responsive: Very small screens ===== */
@@ -970,6 +1116,10 @@ body::before {
   .add-input { max-width: 140px; }
   .friend-add-input { max-width: 130px; }
   .btn-login { padding: 14px; }
+  .stats-overview { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .stat-card:last-child { grid-column: span 2; }
+  .stat-card .stat-number { font-size: 1.3rem; }
+  .stat-card .stat-icon { font-size: 20px; }
 }
 
 /* ===== Print Styles ===== */
@@ -998,8 +1148,8 @@ body::before {
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.2);
     --shadow: 0 2px 12px rgba(0,0,0,0.25);
     --shadow-lg: 0 4px 20px rgba(0,0,0,0.35);
-    --crayon-shadow: 3px 4px 0 rgba(0,0,0,0.18);
-    --crayon-shadow-hover: 4px 6px 0 rgba(0,0,0,0.22);
+    --crayon-shadow: 3px 4px 0 rgba(0,0,0,0.22);
+    --crayon-shadow-hover: 5px 7px 0 rgba(0,0,0,0.28);
     --primary: #7AC8A6;
     --primary-deep: #5AAD8C;
     --primary-soft: #2A4A3A;
@@ -1022,6 +1172,7 @@ body::before {
     --log-delete: #F29090;
   }
   body::before { background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255,255,255,0.01) 1px, rgba(255,255,255,0.01) 3px); opacity: 0.5; }
+  body::after { opacity: 0.3; }
   .friend-card, .group-card, .category, .group-friend-card { border-color: var(--border-soft); }
   input, .add-input, .friend-add-input, .login-card .form-input,
   .group-add-form input, .group-join-form input, .tag-input,
@@ -1038,6 +1189,11 @@ body::before {
   .btn-login { box-shadow: 3px 4px 0 rgba(90,173,140,0.15), 0 4px 14px rgba(90,173,140,0.2); }
   .btn-login:hover { box-shadow: 4px 6px 0 rgba(90,173,140,0.2), 0 6px 20px rgba(90,173,140,0.3); }
   .skeleton { background: linear-gradient(90deg, #303B35 25%, #3a4540 50%, #303B35 75%); }
+  .stat-card { border-color: var(--border-soft); }
+  .stat-card.stat-categories .stat-number { color: #E8C86A; }
+  .stat-card.stat-friends .stat-number { color: #90C8D8; }
+  .food-deco { opacity: 0.06; }
+  .category::after { opacity: 0.2 !important; }
   @media print { body { background: #fff; color: #000; } .category, .friend-card, .group-card { box-shadow: none; border-color: #ccc; } }
 }
 
@@ -1055,8 +1211,8 @@ body::before {
       <feBlend mode="multiply" in="faint" in2="SourceGraphic"/>
     </filter>
     <filter id="sketch-edge">
-      <feTurbulence type="turbulence" baseFrequency="0.04" numOctaves="2" result="wobble"/>
-      <feDisplacementMap in="SourceGraphic" in2="wobble" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+      <feTurbulence type="turbulence" baseFrequency="0.035" numOctaves="3" result="wobble"/>
+      <feDisplacementMap in="SourceGraphic" in2="wobble" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
   </defs>
 </svg>
@@ -1106,6 +1262,30 @@ body::before {
         <span class="user-email" id="friendListUserEmail"></span>
         <button class="logout-btn" onclick="doLogout()">退出登录</button>
       </div>
+
+      <!-- Stats Overview -->
+      <div class="stats-overview" id="statsOverview">
+        <div class="stat-card stat-foods">
+          <span class="stat-icon">📋</span>
+          <div class="stat-number" id="statTotalFoods">0</div>
+          <div class="stat-label">总食物数</div>
+        </div>
+        <div class="stat-card stat-categories">
+          <span class="stat-icon">📂</span>
+          <div class="stat-number" id="statCategories">0</div>
+          <div class="stat-label">有记录的分类</div>
+        </div>
+        <div class="stat-card stat-friends">
+          <span class="stat-icon">👥</span>
+          <div class="stat-number" id="statFriends">0</div>
+          <div class="stat-label">朋友数</div>
+        </div>
+      </div>
+
+      <!-- Decorative food illustrations -->
+      <div class="food-deco food-deco-1">🍅</div>
+      <div class="food-deco food-deco-2">🥕</div>
+      <div class="food-deco food-deco-3">🌽</div>
 
       <div class="friend-cards" id="friendCards"></div>
       <div class="friend-empty" id="friendEmpty">
@@ -1743,6 +1923,24 @@ body::before {
   }
 
   // ============================
+  //  Stats Overview
+  // ============================
+  function renderStatsOverview() {
+    const totalFoods = friends.reduce((sum, f) => sum + (f.foodCount || 0), 0);
+    const friendsWithData = friends.filter(f => (f.foodCount || 0) > 0).length;
+    // Count categories that have data across all friends
+    const categoriesUsed = friendsWithData > 0 ? 3 : 0; // We have 3 fixed categories
+
+    const statTotalFoods = $('#statTotalFoods');
+    const statCategories = $('#statCategories');
+    const statFriends = $('#statFriends');
+
+    if (statTotalFoods) statTotalFoods.textContent = totalFoods;
+    if (statCategories) statCategories.textContent = categoriesUsed;
+    if (statFriends) statFriends.textContent = friends.length;
+  }
+
+  // ============================
   //  Friend List Rendering
   // ============================
   const AVATAR_COLORS = ['#e8f5e8', '#eef5e8', '#e8f5e9', '#e5f2e8', '#eaf5e8', '#f0f5e8'];
@@ -1845,6 +2043,9 @@ body::before {
   function renderFriendList() {
     const container = $('#friendCards');
     const emptyEl = $('#friendEmpty');
+
+    // Render stats overview
+    renderStatsOverview();
 
     if (friends.length === 0) {
       emptyEl.style.display = 'flex';
@@ -3035,18 +3236,19 @@ body::before {
       const icon = isAdd ? '+' : '−';
       const cssClass = isAdd ? 'add' : 'delete';
       const actionText = isAdd ? '添加了' : '删除了';
+      const avatarEmoji = getAvatarEmoji(log.nickname || '');
       return `
         <div class="log-entry ${cssClass}">
-          <div class="log-icon">${icon}</div>
+          <div class="log-icon" title="${escapeHtml(log.nickname || '')}">${icon}</div>
           <div class="log-body">
             <div class="log-text">
               <strong>${escapeHtml(log.nickname || '')}</strong> 为
               <strong>${escapeHtml(log.friendName || '')}</strong> ${actionText}
-              "<strong>${escapeHtml(log.food_name)}</strong>"
+              「<strong>${escapeHtml(log.food_name)}</strong>」
               <span class="log-cat ${log.category}">${catNames[log.category] || log.category}</span>
             </div>
             <div class="log-meta">
-              <span>${renderRelativeTime(log.performed_at)}</span>
+              <span>🕐 ${renderRelativeTime(log.performed_at)}</span>
               <span class="log-user">${escapeHtml(log.nickname || '')}</span>
             </div>
           </div>

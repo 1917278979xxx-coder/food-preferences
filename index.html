@@ -7,7 +7,7 @@
 <!-- Google Fonts & Material Symbols -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Long+Cang&family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,400,0&icon_names=add,arrow_back,close,delete,description,favorite,group,link,list_alt,lock,mail,person,person_add,print,restaurant,search,store,thumb_down,warning&display=block" rel="stylesheet">
 <style>
 /* ============================================================ */
@@ -179,10 +179,8 @@ body::after {
 
 /* ===== Accent Heading ===== */
 .header h1, .login-view h1, .detail-header h1, .group-detail-header h1 {
-  font-family: 'ZCOOL KuaiLe', 'Noto Sans SC', 'PingFang SC', sans-serif;
+  font-family: 'Long Cang', 'Noto Sans SC', 'PingFang SC', sans-serif;
   letter-spacing: 2px;
-  -webkit-text-stroke: 1.8px var(--bg);
-  paint-order: stroke fill;
 }
 /* Sketchy underline on headings */
 .header h1::after, .login-view h1::after {
@@ -1024,7 +1022,7 @@ body::after {
 }
 .stat-card .stat-number {
   font-size: 1.8rem; font-weight: 600; line-height: 1.1;
-  font-family: 'ZCOOL KuaiLe', sans-serif;
+  font-family: 'Long Cang', sans-serif;
 }
 .stat-card.stat-foods .stat-number { color: var(--primary-deep); }
 .stat-card.stat-categories .stat-number { color: #D4A03A; }
@@ -1140,9 +1138,6 @@ body::after {
 /* ===== Print Styles ===== */
 @media print {
   body { background: #fff; font-size: 12pt; color: #222; }
-  .header h1, .login-view h1, .detail-header h1, .group-detail-header h1 {
-    -webkit-text-stroke: 0; paint-order: normal;
-  }
   .back-btn, .export-row, .sync-bar, .bottom-tabs, .add-row, .add-btn,
   .delete-btn, .user-bar, .logout-btn, #skeletonContainer, .filter-bar,
   .toast, .edit-log-overlay { display: none !important; }

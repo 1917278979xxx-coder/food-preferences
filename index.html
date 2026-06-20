@@ -1979,7 +1979,7 @@ html, body {
     if (copyBtn) {
       if (isGroupContext && friend.user_id !== currentUser.id) {
         // Check if this friend already exists in personal list (same name, different owner)
-        const exists = friends.some(f => f.name === friend.name && f.user_id === currentUser.id && !f.group_id);
+        const exists = friends.some(f => f.name === friend.name && f.user_id === currentUser.id);
         copyBtn.style.display = exists ? 'none' : 'inline-flex';
         copyBtn.classList.remove('copied');
       } else {
@@ -2465,14 +2465,35 @@ html, body {
     const fid = friendId || (currentFriend ? currentFriend.id : null);
     if (!fid) return [];
 
+    // Find the friend record to check if it's a group-linked copy
+    const friend = (friends.find(f => f.id === fid) || groupFriends.find(f => f.id === fid) || currentFriend);
+    let resolvedFid = fid;
+    let skipUserFilter = !!currentGroup;
+
+    // If viewing a copied group friend in personal context, resolve to source
+    if (!skipUserFilter && friend && friend.group_id) {
+      const { data: sources } = await supabase
+        .from('friends')
+        .select('id, user_id')
+        .eq('name', friend.name)
+        .eq('group_id', friend.group_id)
+        .order('created_at', { ascending: true });
+
+      if (sources && sources.length > 0) {
+        // Use the original creator's friend as source for food items
+        const source = sources.find(s => s.user_id !== currentUser.id) || sources[0];
+        resolvedFid = source.id;
+        skipUserFilter = true;
+      }
+    }
+
     let query = supabase
       .from('food_items')
       .select('*')
-      .eq('friend_id', fid)
+      .eq('friend_id', resolvedFid)
       .order('sort_order', { ascending: true });
 
-    // In personal (non-group) context, only load own food items
-    if (!currentGroup) {
+    if (!skipUserFilter) {
       query = query.eq('user_id', currentUser.id);
     }
 
@@ -3392,54 +3413,38 @@ html, body {
     if (!currentFriend || !currentGroup) return;
     const copyBtn = $('#copyToMyListBtn');
     if (copyBtn) {
-      copyBtn.textContent = '⏳ 复制中…';
+      copyBtn.textContent = '⏳ 添加中…';
       copyBtn.disabled = true;
     }
 
     try {
-      // 1. Create the friend in personal list
-      const { data: newFriend, error: friendErr } = await supabase
+      // Create a linked friend record (keep group_id so food items stay synced)
+      const { error: friendErr } = await supabase
         .from('friends')
-        .insert({ name: currentFriend.name, user_id: currentUser.id, group_id: null })
-        .select()
-        .single();
+        .insert({
+          name: currentFriend.name,
+          user_id: currentUser.id,
+          group_id: currentGroup.id
+        });
       if (friendErr) throw friendErr;
 
-      // 2. Copy all food items for this friend (current foodItems already loaded)
-      if (foodItems && foodItems.length > 0) {
-        const itemsToInsert = foodItems.map(item => ({
-          name: item.name,
-          category: item.category,
-          friend_id: newFriend.id,
-          user_id: currentUser.id,
-          group_id: null,
-          store_tag: item.store_tag || null,
-          dish_tag: item.dish_tag || null,
-          sort_order: item.sort_order
-        }));
-        const { error: itemsErr } = await supabase
-          .from('food_items')
-          .insert(itemsToInsert);
-        if (itemsErr) throw itemsErr;
-      }
-
-      // 3. Refresh personal friends list
+      // Refresh personal friends list
       friends = await loadFriends();
 
-      // 4. Update button state
+      // Update button state
       if (copyBtn) {
         copyBtn.classList.add('copied');
         copyBtn.textContent = '✅ 已添加到我的列表';
         copyBtn.disabled = false;
       }
-      showToast('✅ 已添加「' + currentFriend.name + '」到我的列表');
+      showToast('✅ 已添加「' + currentFriend.name + '」到我的列表（实时同步）');
     } catch (err) {
       console.error('Failed to copy friend:', err);
       if (copyBtn) {
         copyBtn.textContent = '添加到我的列表';
         copyBtn.disabled = false;
       }
-      showToast('❌ 复制失败：' + (err.message || '请重试'), 3000);
+      showToast('❌ 添加失败：' + (err.message || '请重试'), 3000);
     }
   };
 

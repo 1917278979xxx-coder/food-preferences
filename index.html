@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,400,0&icon_names=add,arrow_back,close,delete,description,favorite,group,link,list_alt,lock,mail,person,print,restaurant,search,store,thumb_down,warning&display=block" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,400,0&icon_names=add,arrow_back,close,delete,description,favorite,group,link,list_alt,lock,mail,person,person_add,print,restaurant,search,store,thumb_down,warning&display=block" rel="stylesheet">
 <style>
 /* ===== CSS Variables ===== */
 :root {
@@ -529,6 +529,37 @@ html, body {
   font-size: var(--font-sm);
   color: var(--text-secondary);
   font-weight: 500;
+}
+
+/* Copy friend to my list button */
+.copy-to-my-list-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 8px;
+  padding: 6px 16px;
+  border-radius: 50px;
+  border: 1.5px dashed var(--group);
+  background: var(--group-light);
+  color: var(--group-dark);
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.copy-to-my-list-btn:hover {
+  background: var(--group);
+  color: #fff;
+  border-style: solid;
+}
+.copy-to-my-list-btn:active { transform: scale(0.96); }
+.copy-to-my-list-btn.copied {
+  background: var(--likes-light);
+  border-color: var(--likes);
+  color: var(--likes-dark);
+  pointer-events: none;
 }
 
 /* ===== Export Buttons ===== */
@@ -1602,6 +1633,9 @@ html, body {
         <div class="detail-icon">🍽️</div>
         <h1>美食偏好管理</h1>
         <div class="friend-tag" id="friendTag"><span class="material-symbols-outlined icon-sm">person</span> <span id="detailFriendName"></span></div>
+        <button class="copy-to-my-list-btn" id="copyToMyListBtn" onclick="copyFriendToMyList()" style="display:none;" title="将这位朋友及其食物信息复制到你的个人列表">
+          <span class="material-symbols-outlined icon-xs">person_add</span> 添加到我的列表
+        </button>
       </div>
 
       <div class="user-bar">
@@ -1938,6 +1972,19 @@ html, body {
     const backBtnText = $('#backBtnText');
     if (backBtnText) {
       backBtnText.textContent = isGroupContext ? '返回小组' : '返回朋友列表';
+    }
+
+    // Show "copy to my list" button only for group friends not in personal list
+    const copyBtn = $('#copyToMyListBtn');
+    if (copyBtn) {
+      if (isGroupContext && friend.user_id !== currentUser.id) {
+        // Check if this friend already exists in personal list (same name, different owner)
+        const exists = friends.some(f => f.name === friend.name && f.user_id === currentUser.id && !f.group_id);
+        copyBtn.style.display = exists ? 'none' : 'inline-flex';
+        copyBtn.classList.remove('copied');
+      } else {
+        copyBtn.style.display = 'none';
+      }
     }
 
     friendListView.classList.remove('active');
@@ -3339,6 +3386,61 @@ html, body {
     if (!friend) return;
     currentGroupFriend = friend;
     switchToFriendDetail(friend, true);
+  };
+
+  window.copyFriendToMyList = async function() {
+    if (!currentFriend || !currentGroup) return;
+    const copyBtn = $('#copyToMyListBtn');
+    if (copyBtn) {
+      copyBtn.textContent = '⏳ 复制中…';
+      copyBtn.disabled = true;
+    }
+
+    try {
+      // 1. Create the friend in personal list
+      const { data: newFriend, error: friendErr } = await supabase
+        .from('friends')
+        .insert({ name: currentFriend.name, user_id: currentUser.id, group_id: null })
+        .select()
+        .single();
+      if (friendErr) throw friendErr;
+
+      // 2. Copy all food items for this friend (current foodItems already loaded)
+      if (foodItems && foodItems.length > 0) {
+        const itemsToInsert = foodItems.map(item => ({
+          name: item.name,
+          category: item.category,
+          friend_id: newFriend.id,
+          user_id: currentUser.id,
+          group_id: null,
+          store_tag: item.store_tag || null,
+          dish_tag: item.dish_tag || null,
+          sort_order: item.sort_order
+        }));
+        const { error: itemsErr } = await supabase
+          .from('food_items')
+          .insert(itemsToInsert);
+        if (itemsErr) throw itemsErr;
+      }
+
+      // 3. Refresh personal friends list
+      friends = await loadFriends();
+
+      // 4. Update button state
+      if (copyBtn) {
+        copyBtn.classList.add('copied');
+        copyBtn.textContent = '✅ 已添加到我的列表';
+        copyBtn.disabled = false;
+      }
+      showToast('✅ 已添加「' + currentFriend.name + '」到我的列表');
+    } catch (err) {
+      console.error('Failed to copy friend:', err);
+      if (copyBtn) {
+        copyBtn.textContent = '添加到我的列表';
+        copyBtn.disabled = false;
+      }
+      showToast('❌ 复制失败：' + (err.message || '请重试'), 3000);
+    }
   };
 
   // ============================

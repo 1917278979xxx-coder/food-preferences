@@ -3006,21 +3006,24 @@ body::after {
 
   async function loadGroups() {
     // Only load groups the current user is a member of
+    // Use nested select to join group_members with groups in one query
     const { data: memberships, error: memberErr } = await supabase
       .from('group_members')
-      .select('group_id')
+      .select('group_id, groups(*)')
       .eq('user_id', currentUser.id);
 
     if (memberErr) { console.error('Failed to load memberships:', memberErr); return []; }
     if (!memberships || memberships.length === 0) return [];
 
-    const groupIds = memberships.map(m => m.group_id);
-    const { data, error } = await supabase
-      .from('groups')
-      .select('*')
-      .in('id', groupIds)
-      .order('created_at', { ascending: true });
-    if (error) { console.error('Failed to load groups:', error); return []; }
+    // Extract unique groups from the joined result
+    const groupMap = {};
+    for (const m of memberships) {
+      if (m.groups && !groupMap[m.groups.id]) {
+        groupMap[m.groups.id] = m.groups;
+      }
+    }
+    const data = Object.values(groupMap);
+
     if (data) {
       for (const g of data) {
         const { count: mCount } = await supabase

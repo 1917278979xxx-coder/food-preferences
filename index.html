@@ -168,6 +168,15 @@ body::after {
 .icon-xs { font-size: 16px; }
 .cat-icon .material-symbols-outlined { font-size: inherit; }
 
+/* ===== Hand-drawn SVG Icons ===== */
+.icon-svg { display: inline-block; vertical-align: middle; }
+.icon-svg-lg { width: 64px; height: 64px; }
+.icon-svg-md { width: 48px; height: 48px; }
+.icon-svg-sm { width: 28px; height: 28px; }
+.icon-svg-xs { width: 20px; height: 20px; }
+.icon-svg-deco { width: 40px; height: 40px; opacity: 0.14; position: absolute; pointer-events: none; z-index: 0; }
+.stat-icon .icon-svg { margin: 0 auto 4px; }
+
 /* ===== Accent Heading ===== */
 .header h1, .login-view h1, .detail-header h1, .group-detail-header h1 {
   font-family: 'ZCOOL KuaiLe', 'Noto Sans SC', 'PingFang SC', sans-serif;
@@ -223,8 +232,9 @@ body::after {
 /* ===== Common: Header ===== */
 .header { text-align: center; padding: 28px 0 8px; }
 .header .icon {
-  font-size: 48px; animation: float 3s ease-in-out infinite;
-  display: inline-block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+  display: inline-block;
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
 }
 @keyframes float {
   0%, 100% { transform: translateY(0) rotate(-0.5deg); }
@@ -254,7 +264,10 @@ body::after {
   align-items: center; justify-content: center;
   padding: 30px 20px; background: var(--bg); gap: 20px;
 }
-.login-view .login-icon { font-size: 64px; animation: bounce 2s ease infinite; }
+.login-view .login-icon {
+  animation: bounce 2s ease infinite;
+  display: inline-block;
+}
 @keyframes bounce {
   0%, 100% { transform: translateY(0) rotate(-0.5deg); }
   50% { transform: translateY(-10px) rotate(0.5deg); }
@@ -418,11 +431,11 @@ body::after {
   text-align: center; padding: 40px 0 16px; color: var(--text-light);
   font-size: var(--font-sm); display: flex; flex-direction: column; align-items: center; gap: 6px;
 }
-.friend-empty .empty-icon { font-size: 48px; opacity: 0.4; animation: float 3s ease-in-out infinite; }
+.friend-empty .empty-icon { opacity: 0.45; animation: float 3s ease-in-out infinite; display: block; margin-bottom: 4px; }
 
 /* ===== Friend Detail View ===== */
 .detail-header { text-align: center; padding: 20px 0 8px; }
-.detail-header .detail-icon { font-size: 48px; animation: float 3s ease-in-out infinite; display: inline-block; }
+.detail-header .detail-icon { animation: float 3s ease-in-out infinite; display: inline-block; }
 .detail-header h1 { font-size: var(--font-xl); color: var(--text); margin-top: 6px; }
 .detail-header .friend-tag {
   display: inline-flex; align-items: center; gap: 4px;
@@ -585,7 +598,7 @@ body::after {
   text-align: center; padding: 20px 0 8px; color: var(--text-light);
   font-size: var(--font-sm); display: flex; flex-direction: column; align-items: center; gap: 4px;
 }
-.empty-state .empty-icon { font-size: 32px; opacity: 0.5; }
+.empty-state .empty-icon { opacity: 0.5; display: block; }
 
 /* ===== Add Row & Form ===== */
 .add-row { margin-top: 14px; display: flex; align-items: center; gap: 8px; }
@@ -740,7 +753,7 @@ body::after {
 
 /* ===== Group List ===== */
 .group-list-view .header { text-align: center; padding-bottom: 8px; }
-.group-list-view .header .icon { font-size: var(--font-xl); }
+.group-list-view .header .icon { display: inline-block; margin-bottom: 4px; }
 .group-cards { display: flex; flex-direction: column; gap: 12px; }
 
 .group-card {
@@ -763,7 +776,7 @@ body::after {
   width: 48px; height: 48px;
   border-radius: 14px 16px 13px 15px;
   background: var(--group-light); display: flex;
-  align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;
+  align-items: center; justify-content: center; flex-shrink: 0;
   box-shadow: 1px 2px 0 rgba(0,0,0,0.04);
 }
 .group-card .group-info { flex: 1; min-width: 0; }
@@ -812,7 +825,7 @@ body::after {
   font-size: var(--font-lg); color: var(--text); margin-top: 8px;
 }
 .group-detail-header .group-icon-lg {
-  font-size: 56px; display: inline-block; animation: float 3s ease-in-out infinite;
+  display: inline-block; animation: float 3s ease-in-out infinite;
 }
 .invite-code-row {
   display: inline-flex; align-items: center; gap: 6px;
@@ -1065,8 +1078,8 @@ body::after {
 
 /* ===== Hand-drawn Food Illustrations (decorative) ===== */
 .food-deco {
-  position: absolute; pointer-events: none; opacity: 0.12;
-  font-size: 40px; z-index: 0;
+  position: absolute; pointer-events: none; opacity: 0.14;
+  z-index: 0;
 }
 .food-deco-1 { top: 120px; right: 10px; transform: rotate(15deg); }
 .food-deco-2 { top: 350px; left: 5px; transform: rotate(-20deg); }
@@ -1214,6 +1227,121 @@ body::after {
       <feTurbulence type="turbulence" baseFrequency="0.035" numOctaves="3" result="wobble"/>
       <feDisplacementMap in="SourceGraphic" in2="wobble" scale="3.5" xChannelSelector="R" yChannelSelector="G"/>
     </filter>
+
+    <!-- ===== Hand-drawn SVG Illustrations ===== -->
+    <!-- Plate/food icon — 🍽️ replacement -->
+    <symbol id="icon-plate" viewBox="0 0 64 64">
+      <ellipse cx="32" cy="38" rx="26" ry="15" fill="#F7F4EC" stroke="#2F3A33" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="55 2 52 1 58 3"/>
+      <ellipse cx="32" cy="34" rx="14" ry="8" fill="#78C2A4" opacity="0.7"/>
+      <circle cx="24" cy="30" r="5.5" fill="#F28C8C" stroke="#2F3A33" stroke-width="1.5" stroke-dasharray="14 1 15 2"/>
+      <path d="M22 26 Q24 23 27 25" fill="none" stroke="#4E9F83" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="36" cy="29" r="4" fill="#F6D97A" stroke="#2F3A33" stroke-width="1.5" stroke-dasharray="10 1 12 2"/>
+      <ellipse cx="38" cy="33" rx="5" ry="3" fill="#A9D6E5" opacity="0.5"/>
+    </symbol>
+
+    <!-- Group/people icon — 👥 replacement -->
+    <symbol id="icon-group" viewBox="0 0 64 64">
+      <circle cx="20" cy="20" r="8" fill="none" stroke="#2F3A33" stroke-width="2" stroke-dasharray="20 2 22 1"/>
+      <path d="M6 44 Q20 28 34 44" fill="none" stroke="#2F3A33" stroke-width="2" stroke-linecap="round" stroke-dasharray="30 2 28 1"/>
+      <circle cx="20" cy="20" r="6" fill="#A9D6E5" opacity="0.5"/>
+      <circle cx="44" cy="18" r="7" fill="none" stroke="#2F3A33" stroke-width="2" stroke-dasharray="18 1 20 2"/>
+      <path d="M32 44 Q46 28 58 44" fill="none" stroke="#2F3A33" stroke-width="2" stroke-linecap="round" stroke-dasharray="28 2 30 1"/>
+      <circle cx="44" cy="18" r="5" fill="#F6D97A" opacity="0.5"/>
+    </symbol>
+
+    <!-- Tomato — 🍅 replacement -->
+    <symbol id="icon-tomato" viewBox="0 0 48 48">
+      <circle cx="24" cy="26" r="15" fill="#F28C8C" stroke="#2F3A33" stroke-width="2" stroke-dasharray="40 2 38 3 42 1"/>
+      <path d="M22 12 Q24 8 26 12" fill="none" stroke="#2F3A33" stroke-width="2" stroke-linecap="round"/>
+      <path d="M20 14 Q24 10 28 14" fill="none" stroke="#78C2A4" stroke-width="1.5" stroke-linecap="round"/>
+      <ellipse cx="15" cy="20" rx="2" ry="1.5" fill="#F7F4EC" opacity="0.6"/>
+    </symbol>
+
+    <!-- Carrot — 🥕 replacement -->
+    <symbol id="icon-carrot" viewBox="0 0 48 48">
+      <path d="M24 8 Q32 14 30 30 Q28 38 24 44 Q20 38 18 30 Q16 14 24 8Z" fill="#F6B26B" stroke="#2F3A33" stroke-width="2" stroke-dasharray="48 3 45 2 50 1"/>
+      <path d="M24 8 Q22 2 18 4" fill="none" stroke="#78C2A4" stroke-width="2" stroke-linecap="round"/>
+      <path d="M24 8 Q26 2 30 4" fill="none" stroke="#78C2A4" stroke-width="2" stroke-linecap="round"/>
+      <path d="M19 24 L22 22 M25 20 L28 18 M21 32 L24 30" fill="none" stroke="#D4914A" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+    </symbol>
+
+    <!-- Corn — 🌽 replacement -->
+    <symbol id="icon-corn" viewBox="0 0 48 48">
+      <ellipse cx="24" cy="26" rx="10" ry="16" fill="#F6D97A" stroke="#2F3A33" stroke-width="2" stroke-dasharray="42 2 40 3 44 1"/>
+      <path d="M10 14 Q24 4 38 14" fill="none" stroke="#78C2A4" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="20" cy="18" r="1.5" fill="#D4A03A" opacity="0.5"/>
+      <circle cx="26" cy="16" r="1.5" fill="#D4A03A" opacity="0.5"/>
+      <circle cx="22" cy="22" r="1.5" fill="#D4A03A" opacity="0.5"/>
+      <circle cx="28" cy="20" r="1.5" fill="#D4A03A" opacity="0.5"/>
+      <circle cx="20" cy="28" r="1.5" fill="#D4A03A" opacity="0.5"/>
+      <circle cx="26" cy="30" r="1.5" fill="#D4A03A" opacity="0.5"/>
+    </symbol>
+
+    <!-- Clipboard — 📋 replacement -->
+    <symbol id="icon-clipboard" viewBox="0 0 48 48">
+      <rect x="10" y="8" width="28" height="34" rx="3" fill="#F7F4EC" stroke="#2F3A33" stroke-width="2" stroke-dasharray="58 3 55 2 60 1"/>
+      <rect x="16" y="4" width="16" height="8" rx="2" fill="#78C2A4" stroke="#2F3A33" stroke-width="2" stroke-dasharray="22 1 24 2"/>
+      <line x1="16" y1="18" x2="32" y2="18" stroke="#2F3A33" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="14 1 16 2"/>
+      <line x1="16" y1="24" x2="30" y2="24" stroke="#2F3A33" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="12 2 14 1"/>
+      <line x1="16" y1="30" x2="28" y2="30" stroke="#2F3A33" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="10 1 12 2"/>
+    </symbol>
+
+    <!-- Folder — 📂 replacement -->
+    <symbol id="icon-folder" viewBox="0 0 48 48">
+      <path d="M6 12 Q6 8 10 8 L20 8 L24 14 L42 14 Q46 14 46 18 L46 38 Q46 42 42 42 L10 42 Q6 42 6 38 Z" fill="#F6D97A" stroke="#2F3A33" stroke-width="2" stroke-linejoin="round" stroke-dasharray="68 4 65 3 70 2"/>
+      <path d="M6 16 L46 16" fill="none" stroke="#2F3A33" stroke-width="1" opacity="0.3" stroke-dasharray="38 2 40 1"/>
+    </symbol>
+
+    <!-- Food pot — 🍲 replacement -->
+    <symbol id="icon-pot" viewBox="0 0 48 48">
+      <path d="M12 16 Q8 16 8 24 L8 34 Q8 42 24 42 Q40 42 40 34 L40 24 Q40 16 36 16 Z" fill="#F7F4EC" stroke="#2F3A33" stroke-width="2" stroke-dasharray="52 3 50 2 54 1"/>
+      <path d="M12 20 L8 26" fill="none" stroke="#2F3A33" stroke-width="2" stroke-linecap="round" stroke-dasharray="8 1 9 2"/>
+      <path d="M36 20 L40 26" fill="none" stroke="#2F3A33" stroke-width="2" stroke-linecap="round" stroke-dasharray="8 1 9 2"/>
+      <ellipse cx="24" cy="28" rx="12" ry="6" fill="#78C2A4" opacity="0.4"/>
+      <path d="M22 8 L22 14" stroke="#F6B26B" stroke-width="3" stroke-linecap="round"/>
+      <path d="M26 8 L26 14" stroke="#F6B26B" stroke-width="3" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Leafy green — 🥬 replacement -->
+    <symbol id="icon-leaf" viewBox="0 0 48 48">
+      <path d="M24 44 Q8 32 12 18 Q16 8 24 6 Q32 8 36 18 Q40 32 24 44Z" fill="#78C2A4" stroke="#2F3A33" stroke-width="2" stroke-dasharray="50 3 48 2 52 1"/>
+      <path d="M24 44 L24 6" fill="none" stroke="#2F3A33" stroke-width="1.5" stroke-dasharray="36 2 38 1" opacity="0.5"/>
+      <path d="M24 18 Q30 14 28 10" fill="none" stroke="#4E9F83" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M24 24 Q18 20 20 16" fill="none" stroke="#4E9F83" stroke-width="1.5" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Beans — 🫘 replacement -->
+    <symbol id="icon-beans" viewBox="0 0 48 48">
+      <ellipse cx="18" cy="22" rx="10" ry="7" fill="#F28C8C" stroke="#2F3A33" stroke-width="2" stroke-dasharray="22 2 20 1 24 3" transform="rotate(-15 18 22)"/>
+      <ellipse cx="30" cy="30" rx="9" ry="6" fill="#F28C8C" stroke="#2F3A33" stroke-width="2" stroke-dasharray="20 2 18 1 22 3" transform="rotate(10 30 30)"/>
+      <circle cx="14" cy="20" r="1.5" fill="#F7F4EC" opacity="0.5"/>
+      <circle cx="26" cy="28" r="1.5" fill="#F7F4EC" opacity="0.5"/>
+    </symbol>
+
+    <!-- Heart — ❤️ replacement (colorful hand-drawn) -->
+    <symbol id="icon-heart" viewBox="0 0 32 32">
+      <path d="M16 26 Q16 26 16 26 Q8 18 4 12 Q0 6 6 4 Q12 2 16 10 Q20 2 26 4 Q32 6 28 12 Q24 18 16 26Z" fill="#F28C8C" stroke="#2F3A33" stroke-width="1.8" stroke-linejoin="round" stroke-dasharray="38 3 35 2 40 1"/>
+    </symbol>
+
+    <!-- Thumbs down — 👎 replacement -->
+    <symbol id="icon-thumbdown" viewBox="0 0 32 32">
+      <path d="M6 6 L22 6 Q24 6 24 8 L24 16 Q24 18 22 18 L14 18 L14 24 Q14 28 10 28 L8 26 L14 18" fill="#F6B26B" stroke="#2F3A33" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="42 3 40 2 44 1"/>
+      <line x1="6" y1="6" x2="6" y2="28" stroke="#2F3A33" stroke-width="4" stroke-linecap="round"/>
+    </symbol>
+
+    <!-- Warning — ⚠️ replacement -->
+    <symbol id="icon-warning" viewBox="0 0 32 32">
+      <path d="M16 4 L30 28 L2 28 Z" fill="#F6D97A" stroke="#2F3A33" stroke-width="2" stroke-linejoin="round" stroke-dasharray="36 2 34 3 38 1"/>
+      <line x1="16" y1="12" x2="16" y2="20" stroke="#2F3A33" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="16" cy="24" r="1.5" fill="#2F3A33"/>
+    </symbol>
+
+    <!-- Person — 👤 replacement for category header icons -->
+    <symbol id="icon-person" viewBox="0 0 32 32">
+      <circle cx="16" cy="10" r="6" fill="none" stroke="#2F3A33" stroke-width="2" stroke-dasharray="16 1 18 2"/>
+      <path d="M6 28 Q16 16 26 28" fill="none" stroke="#2F3A33" stroke-width="2" stroke-linecap="round" stroke-dasharray="22 2 20 1"/>
+      <circle cx="16" cy="10" r="4" fill="#A9D6E5" opacity="0.5"/>
+    </symbol>
   </defs>
 </svg>
 <div class="app-wrapper">
@@ -1221,7 +1349,7 @@ body::after {
   <!-- ==================== Login View ==================== -->
   <div class="view active" id="loginView">
     <div class="login-view">
-      <div class="login-icon">🍽️</div>
+      <div class="login-icon"><svg class="icon-svg icon-svg-lg"><use href="#icon-plate"/></svg></div>
       <h1>美食偏好管理</h1>
       <p class="login-subtitle">登录以管理朋友的饮食偏好</p>
 
@@ -1250,7 +1378,7 @@ body::after {
   <div class="view friend-list-view" id="friendListView">
     <div class="app">
       <div class="header">
-        <div class="icon">🍽️</div>
+        <div class="icon"><svg class="icon-svg icon-svg-md"><use href="#icon-plate"/></svg></div>
         <h1>美食偏好管理</h1>
         <p class="subtitle">选择要查看的朋友</p>
       </div>
@@ -1266,30 +1394,30 @@ body::after {
       <!-- Stats Overview -->
       <div class="stats-overview" id="statsOverview">
         <div class="stat-card stat-foods">
-          <span class="stat-icon">📋</span>
+          <span class="stat-icon"><svg class="icon-svg icon-svg-sm"><use href="#icon-clipboard"/></svg></span>
           <div class="stat-number" id="statTotalFoods">0</div>
           <div class="stat-label">总食物数</div>
         </div>
         <div class="stat-card stat-categories">
-          <span class="stat-icon">📂</span>
+          <span class="stat-icon"><svg class="icon-svg icon-svg-sm"><use href="#icon-folder"/></svg></span>
           <div class="stat-number" id="statCategories">0</div>
           <div class="stat-label">有记录的分类</div>
         </div>
         <div class="stat-card stat-friends">
-          <span class="stat-icon">👥</span>
+          <span class="stat-icon"><svg class="icon-svg icon-svg-sm"><use href="#icon-group"/></svg></span>
           <div class="stat-number" id="statFriends">0</div>
           <div class="stat-label">朋友数</div>
         </div>
       </div>
 
       <!-- Decorative food illustrations -->
-      <div class="food-deco food-deco-1">🍅</div>
-      <div class="food-deco food-deco-2">🥕</div>
-      <div class="food-deco food-deco-3">🌽</div>
+      <div class="food-deco food-deco-1"><svg class="icon-svg icon-svg-deco"><use href="#icon-tomato"/></svg></div>
+      <div class="food-deco food-deco-2"><svg class="icon-svg icon-svg-deco"><use href="#icon-carrot"/></svg></div>
+      <div class="food-deco food-deco-3"><svg class="icon-svg icon-svg-deco"><use href="#icon-corn"/></svg></div>
 
       <div class="friend-cards" id="friendCards"></div>
       <div class="friend-empty" id="friendEmpty">
-        <span class="empty-icon">👥</span>
+        <span class="empty-icon"><svg class="icon-svg icon-svg-md"><use href="#icon-group"/></svg></span>
         <span>还没有朋友记录，点击下方添加</span>
       </div>
 
@@ -1314,7 +1442,7 @@ body::after {
       </div>
 
       <div class="detail-header">
-        <div class="detail-icon">🍽️</div>
+        <div class="detail-icon"><svg class="icon-svg icon-svg-md"><use href="#icon-plate"/></svg></div>
         <h1>美食偏好管理</h1>
         <div class="friend-tag" id="friendTag"><span class="material-symbols-outlined icon-sm">person</span> <span id="detailFriendName"></span></div>
         <button class="copy-to-my-list-btn" id="copyToMyListBtn" onclick="copyFriendToMyList()" style="display:none;" title="将这位朋友及其食物信息复制到你的个人列表">
@@ -1366,7 +1494,7 @@ body::after {
         </div>
         <div class="chips" id="chips-likes"></div>
         <div class="empty-state" id="empty-likes">
-          <span class="empty-icon">🍲</span>
+          <span class="empty-icon"><svg class="icon-svg icon-svg-sm"><use href="#icon-pot"/></svg></span>
           <span>还没有记录，点击下方添加吧</span>
         </div>
         <div class="add-row" id="addRow-likes">
@@ -1394,7 +1522,7 @@ body::after {
         </div>
         <div class="chips" id="chips-dislikes"></div>
         <div class="empty-state" id="empty-dislikes">
-          <span class="empty-icon">🥬</span>
+          <span class="empty-icon"><svg class="icon-svg icon-svg-sm"><use href="#icon-leaf"/></svg></span>
           <span>还没有记录，点击下方添加吧</span>
         </div>
         <div class="add-row" id="addRow-dislikes">
@@ -1422,7 +1550,7 @@ body::after {
         </div>
         <div class="chips" id="chips-allergies"></div>
         <div class="empty-state" id="empty-allergies">
-          <span class="empty-icon">🫘</span>
+          <span class="empty-icon"><svg class="icon-svg icon-svg-sm"><use href="#icon-beans"/></svg></span>
           <span>还没有记录，点击下方添加吧</span>
         </div>
         <div class="add-row" id="addRow-allergies">
@@ -1464,7 +1592,7 @@ body::after {
   <div class="view group-list-view" id="groupListView">
     <div class="app">
       <div class="header">
-        <div class="icon">👥</div>
+        <div class="icon"><svg class="icon-svg icon-svg-md"><use href="#icon-group"/></svg></div>
         <h1>美食偏好管理</h1>
         <p class="subtitle">我的小组</p>
       </div>
@@ -1474,7 +1602,7 @@ body::after {
       </div>
       <div class="group-cards" id="groupCards"></div>
       <div class="group-empty visible" id="groupEmpty">
-        <span class="empty-icon">👥</span>
+        <span class="empty-icon"><svg class="icon-svg icon-svg-md"><use href="#icon-group"/></svg></span>
         <span>还没有加入小组</span>
         <span style="font-size:0.8rem;color:#96a896">创建或加入一个小组吧</span>
       </div>
@@ -1508,7 +1636,7 @@ body::after {
         <button class="back-btn" onclick="goBackToGroupList()">← 返回小组</button>
       </div>
       <div class="group-detail-header">
-        <span class="group-icon-lg" id="groupDetailIcon">👥</span>
+        <span class="group-icon-lg" id="groupDetailIcon"><svg class="icon-svg" style="width:56px;height:56px"><use href="#icon-group"/></svg></span>
         <h1 id="groupDetailName">小组名</h1>
         <button class="invite-code-row" id="inviteCodeRow" onclick="copyInviteCode()" title="点击复制邀请码">
           🔗 <span id="groupInviteCode">--------</span>
@@ -1516,7 +1644,7 @@ body::after {
         </button>
         <div class="member-count" id="groupMemberCount">0 位成员</div>
         <div class="detail-actions">
-          <button class="action-pill log-pill" onclick="openEditLog()">📋 编辑记录</button>
+          <button class="action-pill log-pill" onclick="openEditLog()"><svg class="icon-svg icon-svg-xs" style="vertical-align:text-bottom;margin-right:2px"><use href="#icon-clipboard"/></svg> 编辑记录</button>
           <button class="action-pill" id="groupQuitBtn" onclick="quitGroup()" style="border-color:#c48a6a;color:#a46a4a;">退出小组</button>
         </div>
       </div>
@@ -1538,7 +1666,7 @@ body::after {
   <div class="edit-log-overlay" id="editLogOverlay" onclick="closeEditLog(event)">
     <div class="edit-log-panel" id="editLogPanel" onclick="event.stopPropagation()">
       <div class="log-header">
-        <h3>📋 编辑记录</h3>
+        <h3><svg class="icon-svg icon-svg-xs" style="vertical-align:text-bottom;margin-right:4px"><use href="#icon-clipboard"/></svg> 编辑记录</h3>
         <button class="log-close-btn" onclick="closeEditLog()">✕</button>
       </div>
       <div class="edit-log-empty" id="editLogEmpty">暂无编辑记录</div>
@@ -2414,9 +2542,9 @@ body::after {
       footer.innerHTML = '<span>📝 开始记录朋友的美食偏好吧</span>';
     } else {
       footer.innerHTML = `
-        <span>❤️ ${likes} 爱吃</span>
-        <span>👎 ${dislikes} 不吃</span>
-        <span>⚠️ ${allergies} 过敏</span>
+        <span><svg class="icon-svg icon-svg-xs" style="vertical-align:text-bottom"><use href="#icon-heart"/></svg> ${likes} 爱吃</span>
+        <span><svg class="icon-svg icon-svg-xs" style="vertical-align:text-bottom"><use href="#icon-thumbdown"/></svg> ${dislikes} 不吃</span>
+        <span><svg class="icon-svg icon-svg-xs" style="vertical-align:text-bottom"><use href="#icon-warning"/></svg> ${allergies} 过敏</span>
         <span>📋 共 ${total} 项</span>
       `;
     }
@@ -2944,7 +3072,7 @@ body::after {
 
     cardsEl.innerHTML = groups.map(g => `
       <div class="group-card" onclick="enterGroup('${g.id}')">
-        <div class="group-icon">👥</div>
+        <div class="group-icon"><svg class="icon-svg icon-svg-sm"><use href="#icon-group"/></svg></div>
         <div class="group-info">
           <div class="group-name">${escapeHtml(g.name)}</div>
           <div class="group-meta">

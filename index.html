@@ -1697,6 +1697,8 @@ body::after {
   let foodItems = [];
   let friends = [];
   let realtimeChannel = null;
+  let groupRealtimeChannel = null;
+  let authListener = null; // unsubscribe function for onAuthStateChange
   let currentAddCategory = null;
   let currentUser = null;
   let currentFriend = null;
@@ -1710,7 +1712,6 @@ body::after {
   let groupFriends = [];          // friends belonging to currentGroup
   let currentGroupFriend = null;  // friend selected within group context
   let editLogs = [];              // edit logs for current group
-  let groupRealtimeChannel = null;
 
   // ============================
   //  DOM Helpers
@@ -1748,6 +1749,8 @@ body::after {
   const loginView = $('#loginView');
   const friendListView = $('#friendListView');
   const detailView = $('#detailView');
+  const groupListView = $('#groupListView');
+  const groupDetailView = $('#groupDetailView');
 
   function switchToLogin() {
     loginView.classList.add('active');
@@ -1961,6 +1964,10 @@ body::after {
       supabase.removeChannel(groupRealtimeChannel);
       groupRealtimeChannel = null;
     }
+    if (authListener) {
+      authListener.subscription.unsubscribe();
+      authListener = null;
+    }
     await supabase.auth.signOut();
     currentUser = null;
     currentFriend = null;
@@ -1970,6 +1977,11 @@ body::after {
     friends = [];
     groups = [];
     groupFriends = [];
+    editLogs = [];
+    currentFilter = null;
+    currentAddCategory = null;
+    signupMode = false;
+    currentMainTab = 'friends';
     switchToLogin();
   }
 
@@ -2236,7 +2248,7 @@ body::after {
       return;
     }
 
-    const duplicate = friends.find(f => f.name === name);
+    const duplicate = friends.find(f => f.name.toLowerCase() === name.toLowerCase());
     if (duplicate) {
       showToast('该名字已存在');
       input.focus();
@@ -2462,16 +2474,15 @@ body::after {
       syncCount++;
       bar.classList.add('syncing');
       text.textContent = '同步中…';
-      // Show skeleton only on first load for this view
-      if (skeleton && syncCount <= 1) {
+      if (skeleton && syncCount === 1) {
         skeleton.style.display = 'block';
-        // Hide all category content while skeleton shows
         document.querySelectorAll('.category').forEach(c => c.style.opacity = '0.3');
       }
     } else {
+      syncCount = Math.max(0, syncCount - 1);
+      if (syncCount > 0) return; // still waiting on other syncs
       bar.classList.remove('syncing');
       text.textContent = '已同步';
-      // Hide skeleton
       if (skeleton) {
         skeleton.style.display = 'none';
         document.querySelectorAll('.category').forEach(c => c.style.opacity = '1');
@@ -2681,7 +2692,7 @@ body::after {
     }
 
     const duplicate = foodItems.find(
-      f => f.category === category && f.name === name
+      f => f.category === category && f.name.toLowerCase() === name.toLowerCase()
     );
     if (duplicate) {
       showToast('该食物已存在于此分类中');
@@ -2689,12 +2700,16 @@ body::after {
       return;
     }
 
+    const friendId = currentFriend ? currentFriend.id : null;
     try {
       await addFoodItem(name, category, storeTag, dishTag);
       showToast(`已添加「${name}」`);
       cancelAdd(category);
-      foodItems = await loadFoodItems(currentFriend.id);
-      renderAll();
+      const reloadId = currentFriend ? currentFriend.id : friendId;
+      if (reloadId) {
+        foodItems = await loadFoodItems(reloadId);
+        renderAll();
+      }
     } catch (e) {
       showToast('添加失败，请检查网络连接', 2000);
       console.error(e);
@@ -2713,11 +2728,15 @@ body::after {
       await new Promise(r => setTimeout(r, 250));
     }
 
+    const deleteFriendId = currentFriend ? currentFriend.id : null;
     try {
       await deleteFoodItem(id);
       showToast(`已删除「${name}」`);
-      foodItems = await loadFoodItems(currentFriend.id);
-      renderAll();
+      const reloadId = currentFriend ? currentFriend.id : deleteFriendId;
+      if (reloadId) {
+        foodItems = await loadFoodItems(reloadId);
+        renderAll();
+      }
     } catch (e) {
       showToast('删除失败，请检查网络连接');
       console.error(e);
@@ -2849,13 +2868,17 @@ body::after {
 
     switchToLogin();
 
-    supabase.auth.onAuthStateChange((event, session) => {
+    authListener = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
         onLoginSuccess(session.user);
       } else if (event === 'SIGNED_OUT') {
         if (realtimeChannel) {
           supabase.removeChannel(realtimeChannel);
           realtimeChannel = null;
+        }
+        if (groupRealtimeChannel) {
+          supabase.removeChannel(groupRealtimeChannel);
+          groupRealtimeChannel = null;
         }
         currentUser = null;
         currentFriend = null;
@@ -2893,12 +2916,15 @@ body::after {
       currentGroup = null;
       currentGroupFriend = null;
       currentFriend = null;
+      foodItems = [];
+      groupFriends = [];
       friendListView.classList.add('active');
       loadFriends().then(() => renderFriendList());
     } else {
       currentFriend = null;
       currentGroupFriend = null;
       currentGroup = null;
+      foodItems = [];
       groupListView.classList.add('active');
       loadGroups().then(data => {
         groups = data;
@@ -3399,7 +3425,6 @@ body::after {
       const icon = isAdd ? '+' : '−';
       const cssClass = isAdd ? 'add' : 'delete';
       const actionText = isAdd ? '添加了' : '删除了';
-      const avatarEmoji = getAvatarEmoji(log.nickname || '');
       return `
         <div class="log-entry ${cssClass}">
           <div class="log-icon" title="${escapeHtml(log.nickname || '')}">${icon}</div>

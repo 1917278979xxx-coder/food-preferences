@@ -2441,9 +2441,10 @@ body::after {
         async () => {
           // Reload food items if we're on detail view
           if (currentFriend) {
+            const fid = currentFriend.id;
             setSyncStatus(true);
-            foodItems = await loadFoodItems(currentFriend.id);
-            renderAll();
+            foodItems = await loadFoodItems(fid);
+            if (currentFriend && currentFriend.id === fid) renderAll();
             setTimeout(() => setSyncStatus(false), 600);
           }
         }
@@ -3480,9 +3481,10 @@ body::after {
       }, async () => {
         if (currentGroup) {
           if (currentGroupFriend) {
+            const gfid = currentGroupFriend.id;
             setSyncStatus(true);
-            foodItems = await loadFoodItems(currentGroupFriend.id);
-            renderAll();
+            foodItems = await loadFoodItems(gfid);
+            if (currentGroupFriend && currentGroupFriend.id === gfid) renderAll();
             setTimeout(() => setSyncStatus(false), 600);
           }
           // Refresh group friends to update counts

@@ -3059,24 +3059,18 @@ html, body {
     if (tab === 'friends') {
       currentGroup = null;
       currentGroupFriend = null;
-      if (currentFriend) {
-        detailView.classList.add('active');
-      } else {
-        friendListView.classList.add('active');
-        loadFriends().then(() => renderFriendList());
-      }
+      currentFriend = null;
+      friendListView.classList.add('active');
+      loadFriends().then(() => renderFriendList());
     } else {
       currentFriend = null;
       currentGroupFriend = null;
-      if (currentGroup) {
-        loadGroupDetail();
-      } else {
-        groupListView.classList.add('active');
-        loadGroups().then(data => {
-          groups = data;
-          renderGroupList();
-        });
-      }
+      currentGroup = null;
+      groupListView.classList.add('active');
+      loadGroups().then(data => {
+        groups = data;
+        renderGroupList();
+      });
     }
   };
 

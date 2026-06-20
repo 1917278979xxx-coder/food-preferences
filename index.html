@@ -1595,7 +1595,7 @@ html, body {
   <div class="view detail-view" id="detailView">
     <div class="app">
       <div class="back-row">
-        <button class="back-btn" onclick="goBackToFriendList()"><span class="material-symbols-outlined icon-sm">arrow_back</span> 返回朋友列表</button>
+        <button class="back-btn" id="backBtn" onclick="goBackToFriendList()"><span class="material-symbols-outlined icon-sm">arrow_back</span> <span id="backBtnText">返回朋友列表</span></button>
       </div>
 
       <div class="detail-header">
@@ -1934,6 +1934,12 @@ html, body {
     $('#detailFriendName').textContent = friend.name;
     $('#detailUserEmail').textContent = currentUser.email;
 
+    // Update back button text based on context
+    const backBtnText = $('#backBtnText');
+    if (backBtnText) {
+      backBtnText.textContent = isGroupContext ? '返回小组' : '返回朋友列表';
+    }
+
     friendListView.classList.remove('active');
     loginView.classList.remove('active');
     groupListView.classList.remove('active');
@@ -1958,7 +1964,13 @@ html, body {
   }
 
   function goBackToFriendList() {
-    // Reload friends (counts may have changed)
+    // If in group context, return to group detail view
+    if (currentGroup) {
+      currentGroupFriend = null;
+      loadGroupDetail();
+      return;
+    }
+    // Otherwise return to personal friend list
     switchToFriendList();
     loadFriends().then(() => renderFriendList());
   }

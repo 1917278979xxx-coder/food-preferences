@@ -2406,12 +2406,18 @@ html, body {
     const fid = friendId || (currentFriend ? currentFriend.id : null);
     if (!fid) return [];
 
-    const { data, error } = await supabase
+    let query = supabase
       .from('food_items')
       .select('*')
       .eq('friend_id', fid)
-      .eq('user_id', currentUser.id)
       .order('sort_order', { ascending: true });
+
+    // In personal (non-group) context, only load own food items
+    if (!currentGroup) {
+      query = query.eq('user_id', currentUser.id);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       console.error('Failed to load food items:', error);
@@ -2462,11 +2468,17 @@ html, body {
     const itemName = item ? item.name : '';
     const itemCategory = item ? item.category : '';
 
-    const { error } = await supabase
+    let deleteQuery = supabase
       .from('food_items')
       .delete()
-      .eq('id', id)
-      .eq('user_id', currentUser.id);
+      .eq('id', id);
+
+    // In personal context, only allow deleting own food items
+    if (!currentGroup) {
+      deleteQuery = deleteQuery.eq('user_id', currentUser.id);
+    }
+
+    const { error } = await deleteQuery;
 
     if (error) {
       console.error('Failed to delete food item:', error);

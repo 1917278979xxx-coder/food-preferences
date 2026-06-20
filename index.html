@@ -2456,7 +2456,12 @@ html, body {
 
     // Log edit in group context
     if (currentGroup) {
-      logEdit('add', name, category, currentFriend.id, currentGroup.id);
+      try {
+        await logEdit('add', name, category, currentFriend.id, currentGroup.id);
+      } catch (logErr) {
+        console.error('logEdit failed:', logErr);
+        showToast('⚠️ 编辑记录保存失败: ' + (logErr.message || '未知错误'), 3000);
+      }
     }
 
     return data;
@@ -2487,7 +2492,12 @@ html, body {
 
     // Log edit in group context
     if (currentGroup && itemName) {
-      logEdit('delete', itemName, itemCategory, currentFriend.id, currentGroup.id);
+      try {
+        await logEdit('delete', itemName, itemCategory, currentFriend.id, currentGroup.id);
+      } catch (logErr) {
+        console.error('logEdit failed:', logErr);
+        showToast('⚠️ 编辑记录保存失败: ' + (logErr.message || '未知错误'), 3000);
+      }
     }
   }
 
@@ -3321,13 +3331,13 @@ html, body {
   // ============================
   async function logEdit(action, foodName, category, friendId, groupId) {
     if (!groupId) return;
-    try {
-      await supabase.from('edit_logs').insert({
-        action, food_name: foodName, category,
-        friend_id: friendId, group_id: groupId, user_id: currentUser.id
-      });
-    } catch (e) {
-      console.error('Failed to log edit:', e);
+    const { error } = await supabase.from('edit_logs').insert({
+      action, food_name: foodName, category,
+      friend_id: friendId, group_id: groupId, user_id: currentUser.id
+    });
+    if (error) {
+      console.error('Failed to log edit:', error.message, error.details, error.hint);
+      throw error;
     }
   }
 

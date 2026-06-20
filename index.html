@@ -7,7 +7,7 @@
 <!-- Google Fonts & Material Symbols -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600&family=ZCOOL+KuaiLe&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,400,0&icon_names=add,arrow_back,close,delete,description,favorite,group,link,list_alt,lock,mail,person,person_add,print,restaurant,search,store,thumb_down,warning&display=block" rel="stylesheet">
 <style>
 /* ============================================================ */
@@ -285,7 +285,7 @@ body::after {
   transform: rotate(-0.1deg);
 }
 .login-card label {
-  font-size: var(--font-sm); font-weight: 600; color: var(--text-soft);
+  font-size: var(--font-sm); font-weight: 500; color: var(--text-soft);
   display: flex; align-items: center; gap: 6px;
 }
 .login-card .form-input {
@@ -305,7 +305,7 @@ body::after {
 
 .login-error {
   color: var(--allergies-deep); font-size: var(--font-sm);
-  text-align: center; min-height: 20px; font-weight: 500;
+  text-align: center; min-height: 20px; font-weight: 400;
   background: var(--allergies-light); border-radius: var(--radius-xs);
   padding: 6px 12px;
 }
@@ -315,7 +315,7 @@ body::after {
   border-radius: 30px 34px 28px 32px;
   border: none;
   background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
-  color: #fff; font-size: var(--font-md); font-weight: 700;
+  color: #fff; font-size: var(--font-md); font-weight: 600;
   font-family: inherit; cursor: pointer;
   box-shadow: 3px 4px 0 rgba(78,159,131,0.15), 0 4px 14px rgba(78,159,131,0.25);
   transition: all 0.2s;
@@ -330,7 +330,7 @@ body::after {
 .login-footer { text-align: center; font-size: var(--font-sm); }
 .login-footer a {
   color: var(--primary-deep); cursor: pointer; text-decoration: none;
-  font-weight: 500; transition: color 0.2s;
+  font-weight: 400; transition: color 0.2s;
   background: linear-gradient(to top, var(--primary-soft) 30%, transparent 30%);
 }
 .login-footer a:hover { color: var(--primary); }
@@ -384,7 +384,7 @@ body::after {
 .friend-card .friend-avatar.has-photo::after { content: '🔄'; }
 .friend-card .friend-avatar:hover::after { opacity: 1; }
 .friend-card .friend-info { flex: 1; min-width: 0; }
-.friend-card .friend-name { font-size: var(--font-md); font-weight: 600; color: var(--text); }
+.friend-card .friend-name { font-size: var(--font-md); font-weight: 500; color: var(--text); }
 .friend-card .friend-meta { font-size: 0.76rem; color: var(--text-light); margin-top: 2px; }
 .friend-card .friend-arrow { color: var(--text-light); font-size: 18px; flex-shrink: 0; }
 .friend-card .friend-delete {
@@ -403,7 +403,7 @@ body::after {
   display: inline-flex; align-items: center; gap: 4px;
   padding: 12px 22px; border-radius: var(--radius-full);
   border: 2.5px dashed var(--text-light); background: transparent;
-  color: var(--text-light); font-size: var(--font-sm); font-weight: 500;
+  color: var(--text-light); font-size: var(--font-sm); font-weight: 400;
   cursor: pointer; font-family: inherit;
   transition: all 0.25s ease;
 }
@@ -442,7 +442,7 @@ body::after {
   margin-top: 6px; padding: 5px 16px;
   border-radius: 20px 22px 18px 21px;
   background: var(--bg-soft); font-size: var(--font-sm);
-  color: var(--text-soft); font-weight: 500;
+  color: var(--text-soft); font-weight: 400;
   border: 1px solid var(--border-soft);
 }
 
@@ -452,7 +452,7 @@ body::after {
   margin-top: 8px; padding: 7px 18px;
   border-radius: 22px 24px 20px 23px;
   border: 2px dashed var(--group-deep); background: var(--group-light);
-  color: var(--group-deep); font-size: 0.8rem; font-weight: 500;
+  color: var(--group-deep); font-size: 0.8rem; font-weight: 400;
   font-family: inherit; cursor: pointer; transition: all 0.2s ease;
 }
 .copy-to-my-list-btn:hover { background: var(--group); color: #fff; border-style: solid; box-shadow: 2px 3px 0 rgba(122,176,196,0.2); }
@@ -468,7 +468,7 @@ body::after {
   display: inline-flex; align-items: center; gap: 5px;
   padding: 7px 16px; border-radius: var(--radius-full);
   border: 1.5px solid var(--border); background: var(--card);
-  color: var(--text-soft); font-size: 0.78rem; font-weight: 500;
+  color: var(--text-soft); font-size: 0.78rem; font-weight: 400;
   font-family: inherit; cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 1px 2px 0 rgba(0,0,0,0.03);
@@ -529,14 +529,14 @@ body::after {
 .category.allergies .cat-icon { background: var(--allergies-light); }
 
 .category-header .cat-title {
-  font-size: var(--font-lg); font-weight: 700;
+  font-size: var(--font-lg); font-weight: 600;
 }
 .category.likes .cat-title { color: var(--likes-deep); }
 .category.dislikes .cat-title { color: var(--dislikes-deep); }
 .category.allergies .cat-title { color: var(--allergies-deep); }
 
 .category-header .cat-count {
-  font-size: var(--font-sm); color: var(--text-light); font-weight: 500; margin-left: auto;
+  font-size: var(--font-sm); color: var(--text-light); font-weight: 400; margin-left: auto;
   background: var(--bg-soft); padding: 2px 10px; border-radius: var(--radius-full);
   box-shadow: 1px 1px 0 rgba(0,0,0,0.03);
 }
@@ -548,7 +548,7 @@ body::after {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 12px 8px 16px;
   border-radius: 22px 25px 21px 24px;
-  font-size: var(--font-sm); font-weight: 500;
+  font-size: var(--font-sm); font-weight: 400;
   background: var(--bg-soft); color: var(--text);
   transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.25s ease, background 0.25s ease;
   cursor: default; animation: chipIn 0.3s ease;
@@ -606,7 +606,7 @@ body::after {
   display: inline-flex; align-items: center; gap: 4px;
   padding: 10px 18px; border-radius: var(--radius-full);
   border: 2.5px dashed var(--text-light); background: transparent;
-  color: var(--text-light); font-size: var(--font-sm); font-weight: 500;
+  color: var(--text-light); font-size: var(--font-sm); font-weight: 400;
   cursor: pointer; font-family: inherit; transition: all 0.25s ease;
 }
 .add-btn:hover { border-color: var(--primary); color: var(--primary-deep); background: var(--primary-soft); border-style: solid; }
@@ -659,7 +659,7 @@ body::after {
 
 /* Chip content */
 .chip-content { display: flex; flex-direction: column; gap: 1px; }
-.chip-name { font-weight: 600; }
+.chip-name { font-weight: 500; }
 .chip-tags { font-size: 0.7rem; color: var(--text-light); display: flex; gap: 4px; }
 
 /* ===== Filter Bar ===== */
@@ -680,7 +680,7 @@ body::after {
   box-shadow: 1px 1px 0 rgba(0,0,0,0.02);
 }
 .filter-pill:hover { border-color: var(--primary); color: var(--primary-deep); }
-.filter-pill.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary-deep); font-weight: 600; box-shadow: 2px 2px 0 rgba(78,159,131,0.08); }
+.filter-pill.active { background: var(--primary-soft); border-color: var(--primary); color: var(--primary-deep); font-weight: 500; box-shadow: 2px 2px 0 rgba(78,159,131,0.08); }
 .filter-pill .count { font-size: 0.68rem; opacity: 0.7; margin-left: 2px; }
 .store-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-orange); display: inline-block; margin-right: 2px; }
 .dish-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-blue); display: inline-block; margin-right: 2px; }
@@ -693,7 +693,7 @@ body::after {
   background: rgba(47,58,51,0.92); color: #fff;
   padding: 14px 28px;
   border-radius: 24px 28px 22px 26px;
-  font-size: var(--font-sm); font-weight: 600;
+  font-size: var(--font-sm); font-weight: 500;
   z-index: 200; pointer-events: none;
   transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s ease;
   box-shadow: 0 8px 30px rgba(0,0,0,0.15), 0 0 0 2px rgba(0,0,0,0.05);
@@ -742,7 +742,7 @@ body::after {
 .tab-btn.active::before { transform: translateX(-50%) scaleX(1); }
 .tab-btn:active { transform: scale(0.92); }
 .tab-btn .tab-icon { font-size: 25px; line-height: 1; }
-.tab-btn .tab-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.3px; }
+.tab-btn .tab-label { font-size: 0.7rem; font-weight: 500; letter-spacing: 0.3px; }
 .tab-btn.active { color: var(--tab-active); }
 
 /* Bottom padding for tab bar */
@@ -780,7 +780,7 @@ body::after {
   box-shadow: 1px 2px 0 rgba(0,0,0,0.04);
 }
 .group-card .group-info { flex: 1; min-width: 0; }
-.group-card .group-name { font-size: var(--font-md); font-weight: 600; color: var(--text); }
+.group-card .group-name { font-size: var(--font-md); font-weight: 500; color: var(--text); }
 .group-card .group-meta { font-size: 0.76rem; color: var(--text-light); margin-top: 3px; display: flex; gap: 12px; }
 .group-card .group-arrow { color: var(--text-light); font-size: 20px; flex-shrink: 0; }
 
@@ -796,7 +796,7 @@ body::after {
   display: flex; align-items: center; gap: 6px; width: 100%;
   padding: 14px 20px; border-radius: 18px 21px 19px 20px;
   border: 2.5px dashed var(--text-light); background: transparent;
-  color: var(--text-soft); font-size: var(--font-sm); font-weight: 500;
+  color: var(--text-soft); font-size: var(--font-sm); font-weight: 400;
   cursor: pointer; font-family: inherit; justify-content: center;
   transition: all 0.25s ease;
 }
@@ -834,7 +834,7 @@ body::after {
   background: var(--group-light); border: 2px dashed var(--group-deep);
   font-size: var(--font-sm); color: var(--group-deep);
   cursor: pointer; font-family: monospace; letter-spacing: 2px;
-  font-weight: 600; transition: all 0.2s;
+  font-weight: 500; transition: all 0.2s;
 }
 .invite-code-row:hover { background: var(--group); color: #fff; border-style: solid; }
 .invite-code-row:active { transform: scale(0.97); }
@@ -848,7 +848,7 @@ body::after {
   display: inline-flex; align-items: center; gap: 4px;
   padding: 7px 16px; border-radius: var(--radius-full);
   border: 1.5px solid var(--border); background: var(--card);
-  color: var(--text-soft); font-size: 0.8rem; font-weight: 500;
+  color: var(--text-soft); font-size: 0.8rem; font-weight: 400;
   font-family: inherit; cursor: pointer; transition: all 0.2s;
   box-shadow: 1px 1px 0 rgba(0,0,0,0.03);
 }
@@ -876,11 +876,11 @@ body::after {
   box-shadow: 1px 2px 0 rgba(0,0,0,0.04), 0 2px 6px rgba(0,0,0,0.04);
 }
 .gf-info { flex: 1; min-width: 0; }
-.gf-name { font-size: var(--font-md); font-weight: 600; color: var(--text); }
+.gf-name { font-size: var(--font-md); font-weight: 500; color: var(--text); }
 .gf-meta { font-size: 0.73rem; color: var(--text-light); margin-top: 2px; display: flex; gap: 8px; align-items: center; }
 .contributor {
   background: var(--group-light); color: var(--group-deep);
-  padding: 0 8px; border-radius: var(--radius-xs); font-size: 0.68rem; font-weight: 500;
+  padding: 0 8px; border-radius: var(--radius-xs); font-size: 0.68rem; font-weight: 400;
 }
 .gf-arrow { color: var(--text-light); font-size: 18px; flex-shrink: 0; }
 
@@ -890,7 +890,7 @@ body::after {
   display: flex; align-items: center; gap: 6px; width: 100%;
   padding: 12px 20px; border-radius: 18px 21px 19px 20px;
   border: 2.5px dashed var(--text-light); background: transparent;
-  color: var(--text-light); font-size: var(--font-sm); font-weight: 500;
+  color: var(--text-light); font-size: var(--font-sm); font-weight: 400;
   cursor: pointer; font-family: inherit; justify-content: center;
   transition: all 0.25s ease;
 }
@@ -1021,7 +1021,7 @@ body::after {
   font-size: 28px; margin-bottom: 4px; display: block;
 }
 .stat-card .stat-number {
-  font-size: 1.8rem; font-weight: 800; line-height: 1.1;
+  font-size: 1.8rem; font-weight: 600; line-height: 1.1;
   font-family: 'ZCOOL KuaiLe', sans-serif;
 }
 .stat-card.stat-foods .stat-number { color: var(--primary-deep); }
@@ -1029,7 +1029,7 @@ body::after {
 .stat-card.stat-friends .stat-number { color: #7AB0C4; }
 .stat-card .stat-label {
   font-size: 0.72rem; color: var(--text-light); margin-top: 2px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 /* ===== Activity Feed / Edit Log Timeline ===== */
@@ -1050,7 +1050,7 @@ body::after {
 .log-entry .log-icon {
   width: 32px; height: 32px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 15px; font-weight: 700; flex-shrink: 0; color: #fff;
+  font-size: 15px; font-weight: 600; flex-shrink: 0; color: #fff;
   box-shadow: 2px 3px 0 rgba(0,0,0,0.1);
   z-index: 1;
 }
@@ -1061,7 +1061,7 @@ body::after {
 .log-entry .log-text strong { color: var(--text); }
 .log-entry .log-text .log-cat {
   display: inline-block; padding: 1px 10px; border-radius: 10px 12px 9px 11px;
-  font-size: 0.7rem; font-weight: 600; margin-left: 4px;
+  font-size: 0.7rem; font-weight: 500; margin-left: 4px;
 }
 .log-entry .log-text .log-cat.likes { background: var(--likes-light); color: var(--likes-deep); }
 .log-entry .log-text .log-cat.dislikes { background: var(--dislikes-light); color: var(--dislikes-deep); }
@@ -1073,7 +1073,7 @@ body::after {
 .log-entry .log-meta .log-user {
   background: var(--group-light); color: var(--group-deep);
   padding: 1px 8px; border-radius: 8px 10px 7px 9px; font-size: 0.68rem;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 /* ===== Hand-drawn Food Illustrations (decorative) ===== */

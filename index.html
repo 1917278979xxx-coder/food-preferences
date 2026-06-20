@@ -181,6 +181,8 @@ body::after {
 .header h1, .login-view h1, .detail-header h1, .group-detail-header h1 {
   font-family: 'ZCOOL KuaiLe', 'Noto Sans SC', 'PingFang SC', sans-serif;
   letter-spacing: 2px;
+  -webkit-text-stroke: 1.8px var(--bg);
+  paint-order: stroke fill;
 }
 /* Sketchy underline on headings */
 .header h1::after, .login-view h1::after {
@@ -1138,6 +1140,9 @@ body::after {
 /* ===== Print Styles ===== */
 @media print {
   body { background: #fff; font-size: 12pt; color: #222; }
+  .header h1, .login-view h1, .detail-header h1, .group-detail-header h1 {
+    -webkit-text-stroke: 0; paint-order: normal;
+  }
   .back-btn, .export-row, .sync-bar, .bottom-tabs, .add-row, .add-btn,
   .delete-btn, .user-bar, .logout-btn, #skeletonContainer, .filter-bar,
   .toast, .edit-log-overlay { display: none !important; }

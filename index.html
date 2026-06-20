@@ -3005,9 +3005,20 @@ body::after {
   };
 
   async function loadGroups() {
+    // Only load groups the current user is a member of
+    const { data: memberships, error: memberErr } = await supabase
+      .from('group_members')
+      .select('group_id')
+      .eq('user_id', currentUser.id);
+
+    if (memberErr) { console.error('Failed to load memberships:', memberErr); return []; }
+    if (!memberships || memberships.length === 0) return [];
+
+    const groupIds = memberships.map(m => m.group_id);
     const { data, error } = await supabase
       .from('groups')
       .select('*')
+      .in('id', groupIds)
       .order('created_at', { ascending: true });
     if (error) { console.error('Failed to load groups:', error); return []; }
     if (data) {
@@ -3088,7 +3099,15 @@ body::after {
   window.enterGroup = async function(groupId) {
     currentGroup = groups.find(g => g.id === groupId);
     if (!currentGroup) {
-      // Fetch from db if not in memory
+      // Verify the user is actually a member before loading
+      const { data: membership } = await supabase
+        .from('group_members')
+        .select('id')
+        .eq('group_id', groupId)
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+      if (!membership) { showToast('你尚未加入该小组'); return; }
+
       const { data } = await supabase.from('groups').select('*').eq('id', groupId).single();
       if (!data) { showToast('小组不存在'); return; }
       currentGroup = data;

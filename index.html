@@ -2992,7 +2992,10 @@ html, body {
         loadGroupDetail();
       } else {
         groupListView.classList.add('active');
-        loadGroups().then(() => renderGroupList());
+        loadGroups().then(data => {
+          groups = data;
+          renderGroupList();
+        });
       }
     }
   };

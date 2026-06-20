@@ -3352,7 +3352,7 @@ html, body {
 
     if (error) { console.error('Failed to load edit logs:', error); return []; }
 
-    // Build user nickname map from group_members
+    // Build user nickname map and friend name map
     if (data && data.length > 0) {
       const { data: members } = await supabase
         .from('group_members')
@@ -3360,8 +3360,21 @@ html, body {
         .eq('group_id', groupId);
       const nicknameMap = {};
       if (members) members.forEach(m => { nicknameMap[m.user_id] = m.nickname || m.user_id.slice(0, 8); });
+
+      // Get unique friend_ids and fetch their names
+      const friendIds = [...new Set(data.map(l => l.friend_id).filter(Boolean))];
+      const friendNameMap = {};
+      if (friendIds.length > 0) {
+        const { data: friendsData } = await supabase
+          .from('friends')
+          .select('id, name')
+          .in('id', friendIds);
+        if (friendsData) friendsData.forEach(f => { friendNameMap[f.id] = f.name; });
+      }
+
       for (const log of data) {
         log.nickname = nicknameMap[log.user_id] || log.user_id.slice(0, 8);
+        log.friendName = friendNameMap[log.friend_id] || '未知';
       }
     }
     return data || [];
@@ -3407,7 +3420,8 @@ html, body {
           <div class="log-icon">${icon}</div>
           <div class="log-body">
             <div class="log-text">
-              <strong>${escapeHtml(log.nickname || '')}</strong> ${actionText}
+              <strong>${escapeHtml(log.nickname || '')}</strong> 为
+              <strong>${escapeHtml(log.friendName || '')}</strong> ${actionText}
               "<strong>${escapeHtml(log.food_name)}</strong>"
               <span class="log-cat ${log.category}">${catNames[log.category] || log.category}</span>
             </div>

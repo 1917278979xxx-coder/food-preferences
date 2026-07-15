@@ -2413,7 +2413,7 @@ body {
 
     // Switch to detail view
     document.querySelectorAll('.nav-item, .bn-item').forEach(b => b.classList.remove('active'));
-    VIEWS.forEach(v => { const el = $('#' + v + 'View'); if (el) el.classList.remove('active'); });
+    VIEWS.forEach(v => { const el = $('#' + VIEW_ID_MAP[v]); if (el) el.classList.remove('active'); });
     $('#detailView').classList.add('active');
     currentView = 'detail';
 
@@ -3497,7 +3497,7 @@ body {
 
     // Switch to group detail view
     document.querySelectorAll('.nav-item, .bn-item').forEach(b => b.classList.remove('active'));
-    VIEWS.forEach(v => { const el = $('#' + v + 'View'); if (el) el.classList.remove('active'); });
+    VIEWS.forEach(v => { const el = $('#' + VIEW_ID_MAP[v]); if (el) el.classList.remove('active'); });
     $('#groupDetailView').classList.add('active');
     currentView = 'groupDetail';
 
